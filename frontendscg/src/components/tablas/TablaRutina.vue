@@ -12,7 +12,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr id="fila2" v-for="rutina in rutinas" :key="rutina.codigo" @click="() => {callMetodoN(); consultarbyId(rutina.codigo); consultarbyName(rutina.tipoRutina.nombre,rutina.numero)}">
+          <tr id="fila2" v-for="rutina in rutinasFiltradas" :key="rutina.codigo" @click="() => {callMetodoN(); consultarbyId(rutina.codigo); consultarbyName(rutina.tipoRutina.nombre,rutina.numero)}">
             <td>{{ rutina.tipoRutina.nombre }}</td>
             <td>{{ rutina.numero }}</td>
             <td id="alibutton">
@@ -28,7 +28,7 @@
 
 <script>
 import axios from "axios";
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
   //contructor de las variables 
   export default {
     data(){
@@ -39,8 +39,18 @@ import { mapActions, mapState } from "vuex";
     },
     computed:{
       ...mapState('variables',['datos2']),
-      ...mapState(['retorno','retorno2','retorno3'])},
+      ...mapState(['retorno','retorno2','retorno3','searchQuery']),
+
+      rutinasFiltradas() {
+        const query = this.searchQuery;
+        return this.rutinas.filter(item =>
+          item.tipoRutina.nombre.toLowerCase().includes(query) ||
+          item.numero.toString().includes(query)
+        );
+      },
+    },
     methods: {
+      ...mapMutations(['clearSearchQuery']),
       ...mapActions('variables',['limpiarEjercicios','limpiarArrayE','actionDatos2','actionActiveM',]),
       ...mapActions(['actualizarDato6','actualizarDato8','registrarRutina','limpiarEjercicio']),
 
@@ -121,6 +131,7 @@ import { mapActions, mapState } from "vuex";
       },
     },
     mounted(){
+      this.clearSearchQuery();
       this.obtenerRutinas();
       this.formulario();
     },

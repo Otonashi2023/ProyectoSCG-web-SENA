@@ -2,6 +2,13 @@
     <div class="container2" id="form">
       <h1>Formulario de ejercicio</h1>
       <form @submit.prevent="servicio()" >
+        <div style="display: grid; grid-template-columns: auto; justify-content: center;">
+        <input style="display: none;" type="file" accept="image/*" @change="onFileChange" ref="fileInput"/>
+      </div>
+      <div v-if="imagePreview" style="margin-bottom: 8px;">
+        <h3>Previsualización de la Imagen:</h3>
+        <img :src="imagePreview" alt="Imagen seleccionada" style="max-width: 150px; max-height: 150px;" @click="triggerFileInput"/>
+      </div>
         <div class="comp-form-group">
           <div class="form-group">
             <label for="nombre">Nombre: </label>
@@ -52,11 +59,15 @@ export default {
       nombre:"",
       tipoEjercicio:"",
       musculo:"",
-      series:"",
-      repeticiones:"",
-      descanso:"",
+      series:null,
+      repeticiones:null,
+      descanso:null,
+
       salvar: true,
       modificar: false,
+
+      imagen: '',
+      imagePreview: require('@/assets/foto150.png'),
     };
   },
 
@@ -65,12 +76,14 @@ export default {
     ...mapState('variables',['datos2']),
     ...mapState(['dato','dato2','dato3','nombre','tipoEjercicio','musculo','retorno','datoact2','dato7']),...mapGetters(['getNombre','getTipoEjercicio','getMusculo']),
     ...mapGetters('datosEjercicio',['getSeries','getRepeticiones','getDescanso']),
+    ...mapState('ejercicio',['imagen']),
   },
 //metodos CRUD
   methods:{
     ...mapActions(['actualizarDato7','actualizarRetorno2','actualizarDato','actualizarDato2','actualizarDato3','registrarNombre',
     'registrarTipoEjercicio','registrarMusculo','limpiarDatoact2','actualizarDatoact2','registrarEjercicio']),
     ...mapActions('datosEjercicio',['actualizarSeries','actualizarRepeticiones','actualizarDescanso']),
+    ...mapActions('ejercicio',['subirImagenEjercicio']),
     
     servicio(){
       if(this.salvar==true){
@@ -133,6 +146,12 @@ export default {
         console.log("Ejercicio registrado con exito", response.data);
         alert("El ejercicio es registrado con exito");
         this.$emit('leave');
+
+        const personaId = response.data.codigo;
+        const formData = new FormData();
+        formData.append('file', this.imagen);
+        this.subirImagenEjercicio({codigo: personaId, formData});
+
         if(this.retorno=='retorno'){
           this.actualizarDato7(response.data.codigo);
           this.antesderoutear();
@@ -156,9 +175,12 @@ export default {
           this.series = response.data.series;
           this.repeticiones = response.data.repeticiones;
           this.descanso = response.data.descanso;
+          this.imagen = response.data.imagen;
+          console.log('type imagen: ', typeof this.imagen);
           this.actualizarDato(response.data.nombre.codigo);
           this.actualizarDato2(response.data.tipoEjercicio.codigo);
           this.actualizarDato3(response.data.musculo.codigo);
+          this.urlImagen();
           if(this.habilitar==1){
             this.registrarEjercicio(response.data.nombre.nombre);
           }
@@ -170,6 +192,11 @@ export default {
 
     actualizar(){
       this.codigo=this.datoact2;
+      const personaId = this.codigo;
+      const formData = new FormData();
+      formData.append('file', this.imagen);
+      this.subirImagenEjercicio({codigo: personaId, formData});
+
       axios
         .put('http://localhost:8080/api/ejercicio/actualizar/'+this.codigo,{
           nombre: this.dato,
@@ -193,6 +220,33 @@ export default {
         console.error("Error al actualizar el ejercicio", error);
       });
     },
+    urlImagen(){
+      const baseUrl = 'http://localhost:8080';
+      if(this.imagen){
+        this.imagePreview = this.imagen
+          ? `${baseUrl}${this.imagen}`
+          : require('@/assets/foto150.png');
+        } else{
+          this.imagePreview = require('@/assets/foto150.png');
+        }
+    },
+
+    triggerFileInput() {
+      this.$refs.fileInput.click(); // Simula un clic en el input de archivo
+    },
+
+    onFileChange(event) {
+      this.imagePreview = require('@/assets/foto150.png');
+      const file = event.target.files[0];
+      if (file) {
+        this.imagen = file;
+      // Crear una URL para la previsualización
+      this.imagePreview = URL.createObjectURL(file);
+      }
+      else{
+        this.urlImagen();
+      }
+    },
     
     read(value){
       this.limpiarDatoact2();
@@ -211,6 +265,8 @@ export default {
       this.series="";
       this.repeticiones="";
       this.descanso="";
+      this.imagen="";
+      this.urlImagen();
     },
     cerrar(){
       this.clear();

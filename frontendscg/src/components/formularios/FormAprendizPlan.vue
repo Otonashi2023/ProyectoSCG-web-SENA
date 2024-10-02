@@ -78,15 +78,19 @@ export default {
         // Si no supera el año, solo ajusta el mes
         date.setMonth(mesTotal);
       }
-      if(this.finaliza != null){
+      if(this.finaliza != null && this.finaliza != undefined){
         this.finaliza = date.toISOString().split('T')[0];
         console.log('Fecha: ', this.finaliza);
+      } else{
+        this.finaliza = '';
       }
     },
     getNombreAp(){
-      const nombre = (this.aprendiz?.persona?.nombres).split(' ')[0];
-      const apellido = this.aprendiz?.persona?.apellidos.split(' ')[0];
-      this.vaprendiz = [nombre, apellido].join(' ');
+      if(this.aprendiz.persona.nombres){
+        const nombre = this.aprendiz?.persona?.nombres.split(' ')[0];
+        const apellido = this.aprendiz?.persona?.apellidos.split(' ')[0];
+        this.vaprendiz = [nombre, apellido].join(' ');
+      }
     },
     setCurrentDate() {
       const date = new Date();
@@ -175,7 +179,9 @@ export default {
       this.meses = this.aprendizPlan?.plan?.meses;
       this.setCurrentDate();
       this.inicio = this.currentDate;
-      this.tofinalizacion();
+      if(this.vplan != null || this.vplan != undefined){
+        this.tofinalizacion();
+      }
     },
     
     update(value){
@@ -211,3 +217,13 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.container2{
+  display: grid;
+  justify-content: center;
+}
+.form-group{
+  width: 350px;
+}
+</style>

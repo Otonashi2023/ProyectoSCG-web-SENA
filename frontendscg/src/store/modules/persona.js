@@ -1,4 +1,4 @@
-import { getPersonaAllApi, getPersonaApi, createPersonaApi, updatePersonaApi, deletePersonaApi } from "@/api/PersonaApi";
+import { getPersonaAllApi, getPersonaApi, createPersonaApi, updatePersonaApi, deletePersonaApi, uploadImgPersonaApi } from "@/api/PersonaApi";
 
 const state = {
   persona:{
@@ -24,6 +24,7 @@ const getters = {
   getPersona: (state) => state.persona,
   getPersonas: (state) => state.personas,
   nombreTD: (state) => state.persona?.tipoDocumento?.nombre,
+  foto: (state) => state.persona?.foto,
 };
 
 const mutations = {
@@ -51,6 +52,12 @@ const mutations = {
       foto:null,
     };
   },
+  setFoto(state, foto){
+    state.persona.foto = foto;
+  },
+  clearFoto(state){
+    state.persona.foto = null;
+  }
 };
 
 const actions = {
@@ -120,8 +127,23 @@ const actions = {
       commit('clearPersona');
     } catch (error) {
       console.error("Error eliminar Persona:", error);
+      alert('no se puede eliminar, verifique si el instructor ha sido asignado a una ficha antropometrica');
     }
   },
+
+  async subirFotoPersona({commit}, {codigo, formData}){
+    try{
+      const response = await uploadImgPersonaApi(codigo, formData);
+      commit('setFoto', response.data.foto);
+    } catch(error){
+      console.error("Error al subir la imagen:", error);
+    }
+  },
+
+  limpiarFotoPersona({commit}){
+    commit('clearFoto');
+  },
+
   addPersona({commit}, data){
     commit('setPersona', data);
   },

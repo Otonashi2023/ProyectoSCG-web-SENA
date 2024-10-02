@@ -12,7 +12,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr id="fila2" v-for="(item, index) in finalData" :key="index" @click="callMetodoR(item.rutina.codigo); consultarbyId(item.rutina.codigo)">
+          <tr id="fila2" v-for="(item, index) in rutinasFiltradas" :key="index" @click="callMetodoR(item.rutina.codigo); consultarbyId(item.rutina.codigo)">
             <td>{{ item.rutina.tipoRutina.nombre}} ({{ item.rutina.numero }})</td>
             <td>
               <tr class="head2">
@@ -45,7 +45,7 @@
 
 <script>
 import axios from "axios";
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 //contructor de las variables 
 export default {
   data(){
@@ -57,9 +57,25 @@ export default {
   },
   computed:{
     ...mapState('variables',['groupFilter']),
-    ...mapState(['retorno','retorno3'])},
+    ...mapState(['retorno','retorno3','searchQuery']),
+
+    rutinasFiltradas() {
+        const query = this.searchQuery;
+        return this.finalData.filter(item =>{
+          const planCoincide = item.rutina.tipoRutina.nombre.toLowerCase().includes(query) ||
+                              item.rutina.numero.toString().includes(query);
+          const rutinaCoincide = item.ejercicios.some(ejercicio =>
+            ejercicio.nombre.nombre.toLowerCase().includes(query) ||
+            ejercicio.tipoEjercicio.nombre.toLowerCase().includes(query) ||
+            ejercicio.musculo.nombre.toLowerCase().includes(query)
+          );
+          return planCoincide || rutinaCoincide;
+        });
+      },
+  },
 
   methods: {
+    ...mapMutations(['clearSearchQuery']),
     ...mapActions('variables',['limpiarEjercicios','actionDatos','actionGroupFilter']),
     ...mapActions(['limpiarDatoact1']),
 
@@ -160,6 +176,7 @@ export default {
     },
   },
   mounted(){
+    this.clearSearchQuery();
     this.obtenerRutinaEjercicios();
     this.formulario();
     this.desactivar();

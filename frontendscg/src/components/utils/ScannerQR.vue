@@ -4,7 +4,16 @@
             <font-awesome-icon icon="eye-slash" style="display:grid;justify-content:right;" @click="cerrarScan"/>
             <h3>Escanear Código QR</h3>
             <video id="video" style="width: 500px; height: 350px"></video>
-            <p v-if="qrCodeMessage=false">Código QR detectado: {{ qrCodeMessage }}</p><br>
+            <div v-if="activar" class="json-display">
+              <table>
+                <tr v-for="(value, key) in parsedData" :key="key" @click="ocultar">
+                  <td class="key">{{ key }}:</td>
+                  <td class="value">{{ value }}</td>
+                </tr>
+              </table>
+            </div><br>
+            <button @click="ocultar" v-show="boton"> ver informacion </button>
+            <br>
             <button style="margin-top: 10px" @click="toggleScanner">
             {{ isScanning ? 'Detener Escáner' : 'Iniciar Escáner' }}
           </button>
@@ -24,6 +33,9 @@ import { mapActions, mapState } from 'vuex';
         isScanning: false,
         videoInputDeviceId: null,
         decodingActive: true,
+        scanningAllowed: true,
+        activar: false,
+        boton: true,
       };
     },
     computed:{
@@ -43,20 +55,22 @@ import { mapActions, mapState } from 'vuex';
             const videoInputDevices = await navigator.mediaDevices.enumerateDevices();
             this.videoInputDeviceId = videoInputDevices[0]?.deviceId;
             this.codeReader.decodeFromVideoDevice(this.videoInputDeviceId, 'video', (result, error) => {
-            if (result) {
+            if (result && this.scanningAllowed) {
               this.qrCodeMessage = result.text;
-              console.log('QR detectado:', result.text);
-              const audio = new Audio(require('@/assets/sound/confirmacion.mp3')); // Asegúrate de tener el archivo en la carpeta assets
-              audio.play();
-              setTimeout(() => {
-                  try {
+
+              this.scanningAllowed = false;
+              try {
                           this.parsedData = JSON.parse(this.qrCodeMessage);
                           console.log('Datos del aprendiz:', this.parsedData);
                       } catch (e) {
                           console.error('El QR no contiene un JSON válido', e);
                       }
                   console.log(this.parsedData.codigo);
-                  this.registrarAsistencia(this.parsedData.codigo);
+              const audio = new Audio(require('@/assets/sound/confirmacion.mp3')); // Asegúrate de tener el archivo en la carpeta assets
+              audio.play();
+              this.registrarAsistencia(this.parsedData.codigo);
+              setTimeout(() => {
+                this.scanningAllowed = true;
               }, 2000); 
                 //codeReader.reset();  // Detener el escáner después de detectar un código
               }
@@ -117,11 +131,24 @@ import { mapActions, mapState } from 'vuex';
         const scan= false;
         this.$emit('cerrarScan',scan);
       },
+      ocultar(){
+        if(this.qrCodeMessage == ''){
+          alert('todavia no se ha escaneado una imagen QR');
+        } else {
+          if(this.boton == true){
+            this.boton =false;
+            this.activar = true;
+          } else{
+            this.boton = true;
+            this.activar = false;
+          }
+        }
+      }
     },
   };
   </script>
 
-  <style>
+  <style scoped>
   .modal-fondo {
     position: fixed;
     top: 0;
@@ -146,4 +173,22 @@ import { mapActions, mapState } from 'vuex';
     height: 76%;
     white-space: nowrap;
   }
+  .json-display {
+  margin-top: 20px;
+}
+
+.json-display table {
+  width: 100%;
+  size: 14px;
+}
+
+.json-display .key {
+  text-align: right;
+  font-weight: bold;
+  padding-right: 10px;
+}
+
+.json-display .value {
+  text-align: left;
+}
 </style>

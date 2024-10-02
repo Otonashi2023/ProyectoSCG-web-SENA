@@ -78,8 +78,8 @@ create table personal (
 create table usuario (
   id_usu bigint not null primary key auto_increment,
   nom_usu varchar(45) not null unique,
-  cont_usu varchar(45) not null,
-  personal bigint not null unique,
+  cont_usu varchar(45) not null unique,
+  personal bigint not null,
   constraint fk_usuario_personal
     foreign key (personal)
     references personal (id_personal)
@@ -252,8 +252,8 @@ insert into cargo (nom_cargo) values ("Instructora");
 insert into personal (persona, cargo) values (1,4);
 insert into personal (persona, cargo) values (3,1);
 
-insert into usuario (nom_usu, cont_usu, personal) values ("admin", "admin", 2);
-insert into usuario (nom_usu, cont_usu, personal) values ("admin2", "admin2", 1);
+insert into usuario (nom_usu, cont_usu, personal) values ("admin", "admin", 1);
+insert into usuario (nom_usu, cont_usu, personal) values ("admin2", "admin2", 2);
 
 insert into formacion (nom_formacion) values ("Tecnologia en Analisis y Desarrollo de Software");
 

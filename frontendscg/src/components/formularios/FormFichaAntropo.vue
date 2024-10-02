@@ -141,6 +141,8 @@ export default{
 
       colorStyle: '' ,
       valor: null,
+
+      evaluador: [],
     }
   },
   computed:{
@@ -162,13 +164,13 @@ export default{
     ...mapActions(['actualizarRetorno3','actualizarDatoact1','limpiarDatoact1']),
 
     cargarDatos(){
+      this.getNombreEv();
       this.numControl = this.fichaAntropo.numControl;
       this.fecha = this.fichaAntropo.fecha;
       this.vgenero = this.genero.nombre;
       this.altura = this.fichaAntropo.altura;
       this.peso = this.fichaAntropo.peso;
       this.imc = this.fichaAntropo.imc;
-      this.vpersonal = this.personal?.persona?.nombres;
 
       this.cabeza = this.perimetros?.cabeza;
       this.cuello = this.perimetros?.cuello;
@@ -185,7 +187,11 @@ export default{
       this.pantorrillaMin = this.perimetros?.pantorrillaMin;
       this.evaluacion();
     },
-
+    getNombreEv(){
+      const nombre = this.personal?.persona?.nombres.split(' ')[0];
+      const apellido = this.personal?.persona?.apellidos.split(' ')[0];
+      this.vpersonal = [nombre, apellido].join(' ');
+    },
     datosAntropometricos(){
       if(this.fecha == null){
         this.formattedDate = null;
@@ -450,10 +456,14 @@ export default{
     },
 
     callMetodoG(){
-      console.log('verificando:', this.fecha);    
-      this.storageTemporal();
-      this.actualizarRetorno3('retorno');
-      this.$router.push('genero');
+      if(this.imc != null){
+        console.log('verificando:', this.fecha);    
+        this.storageTemporal();
+        this.actualizarRetorno3('retorno');
+        this.$router.push('genero');
+      } else{
+        alert('primero evalue el IMC ingresando la altura y el peso');
+      }
     },
     callMetodoP(){
       if(this.imc != null){
@@ -471,3 +481,13 @@ export default{
   }
 }
 </script>
+
+<style scoped>
+.container2{
+  display: grid;
+  justify-content: center;
+}
+.form-group{
+  width: 250px;
+}
+</style>

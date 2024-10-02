@@ -10,7 +10,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr id="fila2" v-for="nombre in nombres" :key="nombre.codigo" @click="() => {callMetodoT(); consultarbyId(nombre.codigo); registrarTipoEjercicio(nombre.nombre)}">
+          <tr id="fila2" v-for="nombre in tipoEjFiltrados" :key="nombre.codigo" @click="() => {callMetodoT(); consultarbyId(nombre.codigo); registrarTipoEjercicio(nombre.nombre)}">
             <td>{{ nombre.nombre }}</td>
             <td id="alibutton">
                 <font-awesome-icon icon="edit" id="editar" @click="actualizar(nombre.codigo)"/>
@@ -23,7 +23,7 @@
 </template>
 <script>
 import axios from "axios";
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
   //contructor de las variables 
   export default {
     data(){
@@ -32,8 +32,17 @@ import { mapActions, mapState } from "vuex";
         codigo: null,
       }
     },
-    computed:{...mapState(['retorno2'])},
+    computed:{...mapState(['retorno2','searchQuery']),
+
+    tipoEjFiltrados() {
+        const query = this.searchQuery;
+        return this.nombres.filter(item =>
+          item.nombre.toLowerCase().includes(query)
+        );
+      },
+    },
     methods: {
+      ...mapMutations(['clearSearchQuery']),
       ...mapActions(['actualizarDato2', 'registrarTipoEjercicio']),
 
       obtenerTipoEjercicios(){
@@ -91,6 +100,7 @@ import { mapActions, mapState } from "vuex";
       }
     },
     mounted(){
+      this.clearSearchQuery();
       this.obtenerTipoEjercicios();
     },
   }

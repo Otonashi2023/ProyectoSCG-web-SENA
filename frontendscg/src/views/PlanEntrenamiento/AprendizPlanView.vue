@@ -4,13 +4,14 @@
             <div id="up">
                 <h1 id="alitext">Aprendiz</h1>
                 <div id="alibutton">
-                    <router-link to="fichaAntropometrica" style="color:orangered;margin-right: 40px; font-weight: 700;">Ir a ficha antropo</router-link>
+                    <router-link to="aprendiz" style="color:green;margin-right: 10px; font-weight: 700;">Ir a aprendiz</router-link> |
+                    <router-link to="fichaAntropometrica" style="color:orangered;margin-right: 10px; font-weight: 700;">Ir a ficha antropo</router-link>
                     <font-awesome-icon :icon="['fas', 'address-book']" id="agregar" v-if="listar" @click="irAformulario()"/>
                     <font-awesome-icon icon="circle-xmark" id="cerrar2" v-if="formulario" @click="salir"/>
                 </div>
             </div>
             <div v-show="formulario"><FormAprendizPlan @leave="salir" ref="componenteForm"/></div>
-            <div v-show="listar"><TablaAprendizPlan ref="componente" @ById="read" @change="update" @escuchartable="tabla" @goForm="inData" @verModal="verModal"/></div>
+            <div v-show="listar"><TablaAprendizPlan ref="componente" @ById="read" @change="update" @goForm="inData" @verModal="verModal"/></div>
             <div v-if="modal"><ModalAprendizPlan @verModal="verModal"/></div>
         </div>
     </div>

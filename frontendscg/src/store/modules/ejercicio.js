@@ -1,38 +1,28 @@
-import { getEjercicioAllApi, getEjercicioApi, createEjercicioApi, updateEjercicioApi, deleteEjercicioApi } from "@/api/EjercicioApi";
+import { getEjercicioAllApi, getEjercicioApi, createEjercicioApi, updateEjercicioApi, deleteEjercicioApi, uploadImgEjercicioApi} from "@/api/EjercicioApi";
 
 const state = {
   ejercicio: {
     codigo: null,
-    nombre: {
-      codigo: null,
-      nombre: '',
-    },
-    tipoEjercicio: {
-      codigo: null,
-      nombre: '',
-    },
-    musculo: {
-      codigo: null,
-      nombre: '',
-    },
+    nombre:null,
+    tipoEjercicio: null,
+    musculo:null,
     series: null,
     repeticiones: null,
     descanso: null,
   },
+  imagen: '',
   ejercicios:[],
 };
 
 const getters = {
   getEjercicio: (state) => state.ejercicio,
   getEjercicios: (state) => state.ejercicios,
+  //imagen:(state) => state.ejercicio.imagen,
 };
 
 const mutations = {
-  setEjercicio(state, {data}) {
-    console.log('Estado antes de la mutación:', state.ejercicio);
-    console.log('Datos recibidos:', data);
-    state.ejercicios = {...state.ejercicio, ...data};
-    console.log('Estado después de la mutación:', state.ejercicio);
+  setEjercicio(state, data) {
+    state.ejercicio = data;
   },
   setEjercicios(state, data){
     state.ejercicios = data;
@@ -48,6 +38,15 @@ const mutations = {
         descanso: null,
     };
   },
+  setImagen(state, imagen){
+    state.imagen= imagen;
+
+  },
+  clearImagen(state){
+    console.log("Limpiando imagen. Estado actual de imagen:", state.imagen);
+    state.imagen = '';
+    console.log("Estado después de limpiar imagen:", state.imagen);
+  }
 };
 
 const actions = {
@@ -61,10 +60,8 @@ const actions = {
   },
   async consultarEjercicio({ commit }, codigo) {
     try {
-      console.log('Estado antes de la mutación:', state.ejercicio);
-      console.log('Datos recibidos:', codigo);
       const response = await getEjercicioApi(codigo);
-      commit('setEjercicio', {data:response.data});
+      commit('setEjercicio', response.data);
     } catch (error) {
       console.error("Error consultar Ejercicio", error);
     }
@@ -107,7 +104,19 @@ const actions = {
       console.error("Error eliminar Ejercicio:", error);
     }
   },
-  limpiarAprendiz({commit}){
+  async subirImagenEjercicio({commit}, {codigo, formData}){
+    try{
+      const response = await uploadImgEjercicioApi(codigo, formData);
+      commit('setImagen', response.data.imagen);
+    } catch(error){
+      console.error("Error al subir la imagen:", error);
+    }
+  },
+
+  limpiarImagenEjercicio({commit}){
+    commit('clearImagen');
+  },
+  limpiarEjercicio({commit}){
     commit('clearEjercicio');
   },
 };

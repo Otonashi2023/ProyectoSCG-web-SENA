@@ -1,8 +1,14 @@
 <template>
     <div class="container2" id="form">
         <h1>Datos personales</h1>
-        <form @submit.prevent="actualizarDatos()" id="scroll4">
-        
+        <form @submit.prevent="actualizarDatos()" id="scroll">
+          <div style="display: grid; grid-template-columns: auto; justify-content: center;">
+          <input style="display: none;" type="file" accept="image/*" @change="onFileChange" ref="fileInput"/>
+        </div>
+        <div v-if="imagePreview" style="margin-bottom: 8px;">
+          <h3>Previsualización de la Imagen:</h3>
+          <img :src="imagePreview" alt="Imagen seleccionada" style="max-width: 150px; max-height: 150px;" @click="triggerFileInput"/>
+        </div>
         <div class="comp-form-group2">
             <div class="form-group">
             <label for="nombres">Nombres: </label>
@@ -76,60 +82,37 @@ export default {
     return{
       nombreTD:"",
       nombreCargo:"",
+
+      logear: [],
+
+      foto: null,
+      imagePreview: require('@/assets/foto150.png'),
     }
   },
     computed:{
       ...mapState('usuario',['usuario','usuarios']),
       ...mapState('personal',['personal']),
       ...mapState('persona',['persona']),
-        
+
     },
     methods:{
-      ...mapActions('persona',['actualizarPersona','consultarPersona']),
+      ...mapActions('persona',['actualizarPersona','consultarPersona','subirFotoPersona']),
       ...mapActions('personal',['actualizarPersonal','consultarPersonal']),
       ...mapActions('usuario',['actualizarUsuario','consultarAllUsuarios','consultarUsuario']),
+      ...mapActions(['resetVisibleIn','resetVisibleOut']),
 
       async datosPerfil(){
         try{
-          const username = localStorage.getItem('username').trim();
-          const password = localStorage.getItem('password').trim();
-          console.log('1-username: ', username);
-          console.log('2-password: ', password);
-          await this.consultarAllUsuarios();
+          this.logear = [this.usuario.username, this.usuario.password];
+          console.log('LOGEAR: ', this.logear);
+          const idPersonal = this.usuario.personal.codigo;
+          await this.consultarPersonal(idPersonal);
+          const idPersona = this.personal.persona.codigo;
+          await this.consultarPersona(idPersona);
           await this.$nextTick();
-
-          if(Array.isArray(this.usuarios)){
-            const foundUser = this.usuarios.find(user =>
-            user.username.trim() === username &&
-            user.password.trim() === password);
-            console.log('3-foundUser: ', foundUser);
-            const idUsuario = foundUser.codigo;
-            console.log('idUsuario: ', idUsuario);
-
-            if(idUsuario != null){
-              await this.consultarUsuario(idUsuario);
-              await this.$nextTick();
-              console.log('USUARIO: ',this.usuario);
-              const idPersonal = this.usuario?.personal?.codigo;
-              console.log('idPersonal: ', idPersonal);
-
-              if(idPersonal != null){
-                await this.consultarPersonal(idPersonal);
-                await this.$nextTick();
-                console.log('PERSONAL: ', this.personal);
-                this.nombreCargo = this.personal.cargo.nombre;
-                const idPersona = this.personal?.persona?.codigo;
-                console.log('idPersona: ', idPersona);
-
-                if(idPersona != null){
-                await this.consultarPersona(idPersona);
-                await this.$nextTick();
-                console.log('PERSONA: ',this.persona);
-                this.nombreTD = this.persona?.tipoDocumento?.nombre;
-                }
-              }
-            }
-          }
+          this.nombreTD = this.persona.tipoDocumento.nombre;
+          this.nombreCargo = this.personal?.cargo?.nombre;
+          this.urlImagen();
         }
         catch(error){
           console.log('error al cargar los datos del perfil', error);
@@ -147,10 +130,15 @@ export default {
           celularAlt: this.persona.celularAlt,
           correo: this.persona.correo,
           tipoDocumento: this.persona.tipoDocumento.codigo,
+          foto: this.persona.foto,
         };
         const personaId = this.usuario.personal.persona.codigo;
         await this.actualizarPersona({codigo:personaId, data:data});
         await this.$nextTick();
+
+        const formData = new FormData();
+        formData.append('file', this.foto);
+        await this.subirFotoPersona({codigo: personaId, formData});
 
         const dataPersonal = {
           cargo: this.personal.cargo.codigo,
@@ -169,21 +157,58 @@ export default {
           personal: personalId,
         };
         console.log('DataUsuario: ',dataUsuario);
-        localStorage.setItem('username',this.usuario.username);
-        localStorage.setItem('password', this.usuario.password);
-        const usuarioId = this.usuario.codigo
+
+        if (localStorage.getItem('username') && localStorage.getItem('password')) {
+          localStorage.setItem('username',this.usuario.username);
+          localStorage.setItem('password', this.usuario.password);
+        }
+
+        const usuarioId = this.usuario.codigo;
         console.log('usuarioId: ',usuarioId);
         await this.actualizarUsuario({codigo:usuarioId, data:dataUsuario});
         await this.consultarUsuario(usuarioId);
         await this.$nextTick();
         console.log('usuario new,',this.usuario);
-        this.$router.push('/');
+        
+        if(this.logear[0] !== dataUsuario.username || this.logear[1] !== dataUsuario.password){
+          this.$store.dispatch('logout');
+          this.$router.push('/login');
+          this.resetVisibleIn();
+          this.resetVisibleOut();
+        } else{
+          this.$router.push('/');
+        }
         console.log('resultado final: ', this.usuario);
       } catch (error) {
         console.error("Error al guardar los cambios:", error);
         throw error;
       }
     },
+
+    urlImagen(){
+      const baseUrl = 'http://localhost:8080';
+      this.imagePreview = this.persona.foto
+        ? `${baseUrl}${this.persona.foto}`
+        : require('@/assets/foto150.png');
+    },
+
+    triggerFileInput() {
+      this.$refs.fileInput.click(); // Simula un clic en el input de archivo
+    },
+
+    onFileChange(event) {
+      this.imagePreview = require('@/assets/foto150.png');
+      const file = event.target.files[0];
+      if (file) {
+        this.foto = file;
+      // Crear una URL para la previsualización
+      this.imagePreview = URL.createObjectURL(file);
+      }
+      else{
+        this.urlImagen();
+      }
+    },
+
     async abrirModal(){
       const codigo = this.usuario.personal.codigo;
       await this.consultarPersonal(codigo);
@@ -192,10 +217,21 @@ export default {
       this.$emit('verModal', modal);
     }, 
   },
-  mounted(){
-    this.consultarAllUsuarios();
+  created(){
     this.datosPerfil();
-    console.log('usuario: ', this.usuario);
+  },
+  mounted(){
+    console.log('usuario perfil: ', this.usuario);
   }
 }
 </script>
+
+<style scoped>
+.container2{
+  display: grid;
+  justify-content: center;
+}
+.form-group{
+  width: 350px;
+}
+</style>

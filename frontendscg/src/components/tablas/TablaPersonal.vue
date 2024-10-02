@@ -10,21 +10,19 @@
             <th>Nombres</th>
             <th>Apellidos</th>
             <th>#Identificación</th>
-            <th>cargo</th>
             <th>Telefono</th>
             <th>Correo</th>
-            <th>Rol</th>
+            <th>cargo</th>
             <th>Ver</th>
             <th id="rigth">Acciones</th>
           </tr>
         </thead>
         <tbody>
-          <tr id="fila2" v-for="(item, index) in usuarios" :key="index" @click="() => {callMetodoP(item.personal.codigo); consultar(item.codigo);}">
-            <td>pendiente</td>
+          <tr id="fila2" v-for="(item, index) in personalAllFiltrados" :key="index" @click="() => {callMetodoP(item.personal.codigo); consultar(item.codigo);}">
+            <td><img :src="urlImagen(item.personal.persona.foto)" alt="Foto" style="width: 60px; height: 60px;" /></td>
             <td>{{ item.personal.persona.nombres}}</td>
             <td>{{ item.personal.persona.apellidos }}</td>
             <td>{{ item.personal.persona.cedula }}</td>
-            <td>{{ item.personal.cargo.nombre }}</td>
             <td>{{ item.personal.persona.celular }}</td>
             <td>{{ item.personal.persona.correo }}</td>
             <td>{{ item.personal.cargo.nombre }}</td>
@@ -41,18 +39,39 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapMutations, mapState } from 'vuex';
 
 export default{
     computed:{
       ...mapState('personal',['personal']),
       ...mapState('usuario',['usuarios']),
-      ...mapState(['retorno2','retorno3']),
+      ...mapState(['retorno2','retorno3','searchQuery']),
+
+      personalAllFiltrados() {
+        const query = this.searchQuery;
+        return this.usuarios.filter(item =>
+          item.personal.persona.nombres.toLowerCase().includes(query) ||
+          item.personal.persona.apellidos.toLowerCase().includes(query) ||
+          item.personal.persona.cedula.toString().includes(query) ||
+          item.personal.cargo.nombre.toLowerCase().includes(query) ||
+          item.personal.persona.celular.toString().includes(query) ||
+          item.personal.persona.correo.toLowerCase().includes(query)
+        );
+      },
     },
     methods:{
+      ...mapMutations(['clearSearchQuery']),
       ...mapActions('persona',['eliminarPersona']),
       ...mapActions('personal',['consultarPersonal']),
       ...mapActions('usuario',['consultarAllUsuarios']),
+
+      urlImagen(value){
+      const baseUrl = 'http://localhost:8080';
+      const imagePreview = value
+        ? `${baseUrl}${value}`
+        : require('@/assets/foto150.png');
+        return imagePreview;
+    },
 
       async eliminar(event, value){
         event.stopPropagation();
@@ -89,8 +108,9 @@ export default{
       },
     },
     mounted(){
-        this.consultarAllUsuarios();
-        this.formulario();
+      this.clearSearchQuery();
+      this.consultarAllUsuarios();
+      this.formulario();
     }
 }
 

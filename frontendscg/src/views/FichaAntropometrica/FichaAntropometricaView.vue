@@ -4,7 +4,8 @@
             <div id="up">
                 <h1 id="alitext">Aprendiz</h1>
                 <div id="alibutton">
-                    <router-link to="aprendizPlan" style="color:orangered;margin-right: 40px; font-weight: 700;">Ir a planes</router-link>
+                    <router-link to="aprendiz" style="color:green;margin-right: 10px; font-weight: 700;">Ir a aprendiz</router-link> |
+                    <router-link to="aprendizPlan" style="color:orangered;margin-right: 10px; font-weight: 700;">Ir a planes</router-link>
                     <font-awesome-icon :icon="['fas', 'address-book']" id="agregar" v-if="listar" @click="irAformulario()"/>
                     <font-awesome-icon icon="circle-xmark" id="cerrar2" v-if="formulario" @click="salir"/>
                 </div>

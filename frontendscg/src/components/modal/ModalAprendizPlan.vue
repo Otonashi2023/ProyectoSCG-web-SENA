@@ -3,9 +3,14 @@
       <div v-if="cargando" class="loader">
         <img src="@/assets/loading.gif" alt="Cargando..." />
       </div>
-        <div class="modal-content" v-show="tabla">
+        <div class="modal-content" ref="modal" v-show="tabla" id="tabla-para-descargar">
+          <div style="display: grid;grid-template-columns: 1fr auto;">
             <h1>plan de entrenamiento</h1>
-            <div id="scroll">
+            <font-awesome-icon icon="file-export" id="editar" style="padding-top:8px;" v-show="download" @click="descargarTablaComoPDF"/>
+          </div><br>
+            
+
+            <div id="scroll3">
                 <table>
                 <thead>
                 <tr>
@@ -51,6 +56,8 @@
   
   <script>
   import axios from "axios";
+  import jsPDF from "jspdf";
+  import html2canvas from 'html2canvas';
   import { mapState } from "vuex";
     //contructor de las variables 
     export default {
@@ -62,6 +69,7 @@
           finalData: [],
           originalData: [],
           codigo: null,
+          download: true,
         }
       },
       computed:{
@@ -124,8 +132,67 @@
         });
 
         return Object.values(combinedData);
-          },
+        },
 
+        async descargarTablaComoPDF() {
+  this.download = false;
+  this.$nextTick(async () => {
+    const tabla = document.getElementById('tabla-para-descargar');
+    const modal = this.$refs.modal;
+
+    if (tabla) {
+      const originalOverflow = tabla.style.overflow;
+      tabla.style.overflow = 'visible';
+      tabla.style.maxHeight = 'visible';
+
+      // Expandir el modal temporalmente
+      modal.style.width = '100%';
+      modal.style.height = '100%'; // Cambia a 'auto' para ajustar el tamaño
+      modal.style.overflow = 'visible';
+
+      // Captura la tabla como imagen
+      const canvas = await html2canvas(tabla, { scale: 2 });
+      const imgData = canvas.toDataURL('image/png');
+
+      // Crear un PDF horizontal
+      const pdf = new jsPDF('landscape', 'mm', 'a4');
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pageWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      let positionY = 0;
+
+      while (positionY < imgHeight) {
+        const remainingHeight = imgHeight - positionY;
+        const finalImgHeight = Math.min(remainingHeight, pageHeight);
+
+        pdf.addImage(imgData, 'PNG', 0, positionY * (pageWidth / imgWidth), imgWidth, finalImgHeight * (pageWidth / imgWidth), undefined, 'FAST');
+
+        positionY += finalImgHeight;
+
+        if (positionY < imgHeight) {
+          pdf.addPage();
+        }
+      }
+
+      pdf.save('tabla.pdf');
+
+      // Restaurar el estilo original
+      tabla.style.overflow = originalOverflow;
+      tabla.style.maxHeight = 'none';
+      modal.style.width = ''; // Restaurar el ancho original
+      modal.style.height = ''; // Restaurar la altura original
+      modal.style.overflow = ''; // Restaurar el estilo original
+    } else {
+      console.error('No se encontró el elemento con id "tabla-para-descargar".');
+    }
+  });
+},
+
+
+              
         cerrarModal(){
           const modal = false;
           this.$emit('verModal', modal);
@@ -160,8 +227,11 @@
     padding: 20px;
     border-radius: 5px;
     width: max-content;
-    max-width: 90%;
+    max-width: max-content;    
     text-align: center;
+    max-height: max-content;
+    height: max-content
+    
   }
   .loader img {
   width: 50px;

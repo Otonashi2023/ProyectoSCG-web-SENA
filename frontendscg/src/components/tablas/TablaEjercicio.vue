@@ -17,9 +17,9 @@
           </tr>
         </thead>
         <tbody>
-          <tr id="fila2" v-for="ejercicio in ejercicios" :key="ejercicio.codigo" @click="() => {callMetodoE(ejercicio.codigo);
+          <tr id="fila2" v-for="ejercicio in ejerciciosFiltrados" :key="ejercicio.codigo" @click="() => {callMetodoE(ejercicio.codigo);
             consultarbyId(ejercicio.codigo);addEjercicio(ejercicio.nombre.codigo, ejercicio.tipoEjercicio.codigo, ejercicio.musculo.codigo)}">
-            <td>Pendiente</td>
+            <td><img :src="urlImagen(ejercicio.imagen)" alt="Foto" style="width: 60px; height: 60px" /></td>
             <td>{{ ejercicio.nombre.nombre }}</td>
             <td>{{ ejercicio.tipoEjercicio.nombre }}</td>
             <td>{{ ejercicio.musculo.nombre }}</td>
@@ -39,7 +39,7 @@
 
 <script>
 import axios from "axios";
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
   //contructor de las variables 
   export default {
     data(){
@@ -50,13 +50,32 @@ import { mapActions, mapState } from "vuex";
     },
     computed:{
       ...mapState('variables',['datos2']),
-      ...mapState(['retorno','retorno2','dato7'])},
+      ...mapState(['retorno','retorno2','dato7','searchQuery']),
+  
+      ejerciciosFiltrados() {
+        const query = this.searchQuery;
+        return this.ejercicios.filter(item =>
+          item.nombre.nombre.toLowerCase().includes(query) ||
+          item.tipoEjercicio.nombre.toLowerCase().includes(query) ||
+          item.musculo.nombre.toLowerCase().includes(query)
+        );
+      },
+    },
     
     methods: {
+      ...mapMutations(['clearSearchQuery']),
       ...mapActions('datosEjercicio',['actualizarNombreCode','actualizarTipoEjercicioCode','actualizarMusculoCode']),
       ...mapActions('variables',['actionDatos2']),
       ...mapActions(['actualizarDato7','registrarEjercicio']),
 
+      urlImagen(value){
+      const baseUrl = 'http://localhost:8080';
+      const imagePreview = value
+        ? `${baseUrl}${value}`
+        : require('@/assets/foto150.png');
+        return imagePreview;
+    },
+    
       obtenerEjercicios(){
         // Método para obtener los campos de la lista
         axios.get("http://localhost:8080/api/ejercicio/listar")
@@ -124,6 +143,7 @@ import { mapActions, mapState } from "vuex";
       },
     },
     mounted(){
+      this.clearSearchQuery();
       this.obtenerEjercicios();
       this.formulario();
       this.desactivar();

@@ -12,7 +12,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr id="fila2" v-for="ficha in fichas" :key="ficha.codigo" @click="() => {callMetodoN(ficha.codigo); consultarbyId(ficha.codigo);}">
+          <tr id="fila2" v-for="ficha in fichasFiltradas" :key="ficha.codigo" @click="() => {callMetodoN(ficha.codigo); consultarbyId(ficha.codigo);}">
             <td>{{ ficha.numero }}</td>
             <td>{{ ficha.formacion.nombre }}</td>
             <td id="alibutton">
@@ -22,13 +22,14 @@
           </tr>      
         </tbody>
       </table>
-      </div>      
+      </div>
+      <p>{{ nombres }}</p>    
     </div>
 </template>
 
 <script>
 import axios from "axios";
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
   //contructor de las variables 
   export default {
     data(){
@@ -40,8 +41,18 @@ import { mapActions, mapState } from "vuex";
     computed:{
       ...mapState('formacion',['formacion']),
       ...mapState('ficha',['ficha']),
-      ...mapState(['retorno','retorno2','datoact2'])},
+      ...mapState(['retorno','retorno2','datoact2','searchQuery']),
+    
+      fichasFiltradas() {
+        const query = this.searchQuery;
+        return this.fichas.filter(item =>
+          item.numero.toString().includes(query) ||
+          item.formacion.nombre.toLowerCase().includes(query)
+        );
+      },
+    },
     methods: {
+      ...mapMutations(['clearSearchQuery']),
       ...mapActions('formacion',['consultarFormacion']),
       ...mapActions('ficha',['consultarFicha','limpiarFicha']),
 
@@ -103,6 +114,7 @@ import { mapActions, mapState } from "vuex";
       },
     },
     mounted(){
+      this.clearSearchQuery();
       this.obtenerFichas();
       this.formulario();
     },

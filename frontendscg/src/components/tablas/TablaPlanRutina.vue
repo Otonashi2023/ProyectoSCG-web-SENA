@@ -12,7 +12,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr id="fila2" v-for="(plan, index) in finalData" :key="index" @click ="callMetodoP(plan.plan.codigo)">
+      <tr id="fila2" v-for="(plan, index) in planesFiltrados" :key="index" @click ="callMetodoP(plan.plan.codigo)">
         <td>{{ plan.plan.tipoPlan.nombre }}_(<span style="color: #EA0234; font-weight: 600;">{{ plan.plan.meses }}</span>)</td>
         <td>
             <tr v-for="(rutina, i) in plan.rutinas" :key="i">
@@ -53,7 +53,7 @@
   
   <script>
   import axios from "axios";
-  import { mapActions, mapState } from "vuex";
+  import { mapActions, mapMutations, mapState } from "vuex";
   //contructor de las variables 
   export default {
     data(){
@@ -65,9 +65,23 @@
     },
     computed:{
       ...mapState('variables',['groupFilter2','datos3']),
-      ...mapState(['retorno3','retorno4'])},
-  
+      ...mapState(['retorno3','retorno4','searchQuery']),
+
+      planesFiltrados() {
+        const query = this.searchQuery;
+        return this.finalData.filter(plan =>{
+          const planCoincide = plan.plan.tipoPlan.nombre.toLowerCase().includes(query) ||
+                              plan.plan.meses.toString().includes(query);
+          const rutinaCoincide = plan.rutinas.some(rutina =>
+            rutina.tipoRutina.nombre.toLowerCase().includes(query) ||
+            rutina.numero.toString().includes(query)
+          );
+          return planCoincide || rutinaCoincide;
+        });
+      },
+    },
     methods: {
+      ...mapMutations(['clearSearchQuery']),
       ...mapActions('aprendizPlan',['agregarPlan']),
       ...mapActions('variables',['limpiarRutinas','actionDatos3','actionGroupFilter2','limpiarDatos3']),
       ...mapActions(['limpiarDatoact1']),
@@ -191,6 +205,7 @@
       },
     },
     mounted(){
+      this.clearSearchQuery();
       this.obtenerPlanRutinasYEnriquecer();
       this.formulario();
     },

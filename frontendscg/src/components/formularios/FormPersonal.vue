@@ -2,7 +2,13 @@
   <div class="container2" id="form">
     <h1>Datos Personales</h1>
     <form @submit.prevent="compararDatos()" id="scroll">
-      
+      <div style="display: grid; grid-template-columns: auto; justify-content: center;">
+        <input style="display: none;" type="file" accept="image/*" @change="onFileChange" ref="fileInput"/>
+      </div>
+      <div v-if="imagePreview" style="margin-bottom: 8px;">
+        <h3>Previsualización de la Imagen:</h3>
+        <img :src="imagePreview" alt="Imagen seleccionada" style="max-width: 150px; max-height: 150px;" @click="triggerFileInput"/>
+      </div>
       <div class="comp-form-group2">
         <div class="form-group">
           <label for="nombres">Nombres: </label>
@@ -74,6 +80,9 @@ import { mapActions, mapState } from 'vuex';
       return{
         salvar: true,
         modificar: false,
+
+        foto: null,
+        imagePreview: require('@/assets/foto150.png'),
       }
     },
     computed:{
@@ -86,7 +95,7 @@ import { mapActions, mapState } from 'vuex';
     },
     methods:{
       ...mapActions('tipoDocumento',['consultarTipoDocumento']),
-      ...mapActions('persona',['guardarPersona','consultarPersona','actualizarPersona','addPersona', 'limpiarCodigoPersona']),
+      ...mapActions('persona',['guardarPersona','consultarPersona','actualizarPersona','addPersona', 'limpiarCodigoPersona','subirFotoPersona']),
       ...mapActions('cargo',['consultarCargo']),
       ...mapActions('personal',['guardarPersonal', 'consultarPersonal','actualizarPersonal','addPersonal','saveIdPersonal','limpiarCodigoPersonal']),
       ...mapActions('usuario',['guardarUsuario','consultarUsuario', 'actualizarUsuario','consultarAllUsuarios','addUsuario','limpiarCodigoUsuario']),
@@ -117,6 +126,7 @@ import { mapActions, mapState } from 'vuex';
           correo: this.persona.correo,
           tipoDocumento: this.tipoDocumento.codigo,
           codigo: this.persona.codigo,
+          foto: this.persona.foto,
         };
       },
       datosPersonal(personaId){
@@ -146,6 +156,10 @@ import { mapActions, mapState } from 'vuex';
           await this.$nextTick();
           const personaId = this.persona.codigo;
           console.log('codigo persona para personal: ',personaId);
+
+          const formData = new FormData();
+          formData.append('file', this.foto);
+          await this.subirFotoPersona({codigo: personaId, formData});
  
           this.datosPersonal(personaId);
           console.log('dataPersonal: ', this.dataPersonal);
@@ -175,6 +189,10 @@ import { mapActions, mapState } from 'vuex';
           console.log('PERSONA: ',personaId);
           await this.actualizarPersona({codigo:personaId, data:this.data});
           console.log('MOSTRAR PERSONA', this.persona);
+
+          const formData = new FormData();
+          formData.append('file', this.foto);
+          await this.subirFotoPersona({codigo: personaId, formData});
  
           this.datosPersonal(personaId);
           console.log('???????????',this.personal);
@@ -199,6 +217,7 @@ import { mapActions, mapState } from 'vuex';
       },
 
       async verificar(){  
+        if (localStorage.getItem('username') && localStorage.getItem('password')) {
         const username = localStorage.getItem('username').trim();
         const password = localStorage.getItem('password').trim();
         await this.consultarAllUsuarios();
@@ -220,9 +239,14 @@ import { mapActions, mapState } from 'vuex';
               this.actualizarDatos();
             }
           }
+        } else {
+          this.actualizarDatos();
+        }
       },
 
       async consultar(value){
+        this.imagePreview = require('@/assets/foto150.png');
+        await this.$nextTick();
         try{
           await this.consultarUsuario(value);
           const idPersonal = this.usuario?.personal?.codigo;
@@ -250,6 +274,7 @@ import { mapActions, mapState } from 'vuex';
               if(idDocumento != null){
                 await this.consultarTipoDocumento(idDocumento)
               }
+              this.urlImagen();
             }
           }
           console.log('Verificar TIPODOCUMENTO: ',this.tipoDocumento);
@@ -261,6 +286,35 @@ import { mapActions, mapState } from 'vuex';
           console.log('error al consultar personal',error);
         }
       },
+
+      urlImagen(){
+      const baseUrl = 'http://localhost:8080';
+      if(this.persona.foto){
+        this.imagePreview = this.persona.foto
+        ? `${baseUrl}${this.persona.foto}`
+        : require('@/assets/foto150.png');
+      } else{
+        this.imagePreview = require('@/assets/foto150.png');
+      }
+    },
+
+    triggerFileInput() {
+      this.$refs.fileInput.click(); // Simula un clic en el input de archivo
+    },
+
+    onFileChange(event) {
+      this.imagePreview = require('@/assets/foto150.png');
+      const file = event.target.files[0];
+      if (file) {
+        this.foto = file;
+      // Crear una URL para la previsualización
+      this.imagePreview = URL.createObjectURL(file);
+      console.log('IMAGENPREVIEW: ',this.imagenPreview);
+      }
+      else{
+        this.urlImagen();
+      }
+    },
       
       async compararDatos() {
         const username = this.usuario.username.trim().toLowerCase();
@@ -367,5 +421,18 @@ import { mapActions, mapState } from 'vuex';
         this.$router.push('cargo');
       },
     },
+    async mounted(){
+      this.urlImagen();
+      await this.$nextTick();
+    }
   }
   </script>
+  <style scoped>
+  .container2{
+    display: grid;
+    justify-content: center;
+  }
+  .form-group{
+    width: 350px;
+  }
+  </style>

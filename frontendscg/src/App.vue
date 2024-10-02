@@ -291,6 +291,11 @@ section{
     background: var(--color-gris-claro);
     margin: 0;
 }
+.busqueda #resetQuery{
+    height: 14px;
+    margin-left:14px; 
+    cursor:pointer;
+}
 
 #contenido .navegacion .perfil {
     display: flex;
@@ -455,6 +460,7 @@ tr:hover .head2 {
 }
 
 #scroll{
+  border-radius: 8px;
   overflow-x: auto;
   overflow-y: auto;
   width: auto;
@@ -462,6 +468,7 @@ tr:hover .head2 {
   white-space: nowrap;
 }
 #scroll2{
+  border-radius: 8px;
   overflow-x: auto;
   overflow-y: auto;
   width: auto;
@@ -469,6 +476,7 @@ tr:hover .head2 {
   white-space: nowrap;
 }
 #scroll3{
+  border-radius: 8px;
   overflow-x: auto;
   overflow-y: auto;
   width: auto;
@@ -476,6 +484,7 @@ tr:hover .head2 {
   white-space: nowrap;
 }
 #scroll4{
+  border-radius: 8px;
   overflow-x: auto;
   overflow-y: auto;
   width: auto;
@@ -551,6 +560,17 @@ tr:hover .head2 {
 #eliminar :hover{
   color: var(--color-rojo);
 }
+#cancelacion{
+  margin: 0 10px;
+  padding: 0%;
+  height: 25px;
+  transition: 0.3s ease;
+  cursor: pointer;
+}
+
+#cancelacion :hover{
+  color: orangered;
+}
 
 #alibutton{
   text-align: right;
@@ -621,27 +641,4 @@ tr:hover .head2 {
   height: 30px;
 }
 
-
-
-/** MODAL *//*
-.modal-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.2);
-}
-
-.modal {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%,-50%);
-  background: white;
-  padding: 20px;
-  border-radius: 5px;
-  width: 500px;
-  height: 400px;
-}*/
 </style>

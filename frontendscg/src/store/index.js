@@ -53,6 +53,8 @@ export default createStore({
     rutina: "",
     ejercicio: "",
     plan: "",
+    email:"",
+    searchQuery: "",
 
     visibleIn: false,
     visibleOut: true,
@@ -86,6 +88,7 @@ export default createStore({
     getRutina: (state) => state.rutina,
     getEjercicio: (state) => state.ejercicio,
     getPlan: (state) => state.plan,
+    getSearchQuery: (state) => state.searchQuery,
 
     inVisible: state => state.visibleIn,
     outVisible: state => state.visibleOut,
@@ -259,6 +262,18 @@ export default createStore({
     },
     clearPlan(state){
       state.plan = "";
+    },
+    setEmail(state, nuevodato){
+      state.email = nuevodato;
+    },
+    clearEmail(state){
+      state.email = "";
+    },
+    setSearchQuery(state, query) {
+      state.searchQuery = query;
+    },
+    clearSearchQuery(state){
+      state.searchQuery = "";
     },
 
 
@@ -459,6 +474,12 @@ export default createStore({
     },
     limpiarPlan({commit}){
       commit('clearPlan');
+    },
+    registrarEmail({commit}, email){
+      commit('setEmail',email);
+    },
+    limpiarEmail({commit}){
+      commit('clearEmail');
     },
 
 

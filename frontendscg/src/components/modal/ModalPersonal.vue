@@ -5,7 +5,7 @@
           <h3>Datos Personales</h3>
           <div style="display: grid;grid-template-columns: auto auto">
             <div class="perfil-contenedor" style="padding-left: 10px;">
-              <img :src="fotoPerfil" alt="Foto de perfil" class="perfil-foto" />
+              <img :src="urlImagen()" alt="Foto de perfil" class="perfil-foto" />
             </div>
             <div>
               <div id="alineacion"><div id="alignR"><strong>Nombres: </strong></div><div id="alignL">{{ personal.persona.nombres }}</div></div>
@@ -38,6 +38,15 @@
       ...mapState('personal',['personal']),
     },
     methods: {  
+      urlImagen(){
+        console.log('PERSONAL: ',this.personal);
+        const baseUrl = 'http://localhost:8080';
+        const imagePreview = this.personal.persona.foto
+          ? `${baseUrl}${this.personal.persona.foto}`
+          : require('@/assets/foto150.png');
+          return imagePreview;
+      },
+
       cerrarModal(){
         const modal = false;
         this.$emit('verModal', modal);
@@ -89,8 +98,8 @@
   
   .perfil-foto {
     border-radius: 50%;
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
   }
   #alineacion{
     display: grid;

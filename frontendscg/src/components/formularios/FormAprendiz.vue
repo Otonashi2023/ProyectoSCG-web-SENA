@@ -6,7 +6,13 @@
     
   </div>
     <form @submit.prevent="compararDatos()" id="scroll">
-      
+      <div style="display: grid; grid-template-columns: auto; justify-content: center;">
+        <input style="display: none;" type="file" accept="image/*" @change="onFileChange" ref="fileInput"/>
+      </div>
+      <div v-if="imagePreview" style="margin-bottom: 8px;">
+        <h3>Previsualización de la Imagen:</h3>
+        <img :src="imagePreview" alt="Imagen seleccionada" style="max-width: 150px; max-height: 150px;" @click="triggerFileInput"/>
+      </div>
       <div class="comp-form-group2">
         <div class="form-group">
           <label for="nombres">Nombres: </label>
@@ -86,8 +92,12 @@ export default {
       correo: '',
       vficha: null,
       nombreFormacion: '',
+
       salvar: true,
       modificar: false,
+
+      foto: null,
+      imagePreview: require('@/assets/foto150.png'),
     }
   },
   computed:{
@@ -102,13 +112,14 @@ export default {
   methods:{
     ...mapActions('tipoDocumento',['consultarTipoDocumento']),
     ...mapActions('persona',['guardarPersona','addPersona','consultarPersona','limpiarCodigoPersona','actualizarPersona',
-      'consultarAllPersonas']),
+      'consultarAllPersonas','subirFotoPersona']),
     ...mapActions('formacion',['consultarFormacion']),
     ...mapActions('ficha',['guardarFicha','consultarFicha']),
     ...mapActions('aprendiz',['guardarAprendiz','addAprendiz','consultarAprendiz','limpiarCodigoAprendiz','actualizarAprendiz']),
     ...mapActions(['actualizarRetorno','actualizarDatoact1','limpiarDatoact1']),
     
   cargarDatos(){
+    this.urlImagen();
     this.nombres = this.persona.nombres;
     this.apellidos = this.persona.apellidos;
     this.nombreTipoDocumento = this.tipoDocumento.nombre;
@@ -132,7 +143,8 @@ export default {
         celular: this.celular,
         contacto: this.contacto,
         celularAlt: this.celularAlt,
-        correo: this.correo,          
+        correo: this.correo,
+        foto: this.persona.foto,
       };
       console.log('data: ',this.data);
     },
@@ -172,11 +184,15 @@ export default {
         const personaId = this.persona.codigo;
         console.log('persona: ',this.persona);
 
+        const formData = new FormData();
+        formData.append('file', this.foto);
+        await this.subirFotoPersona({codigo: personaId, formData});
+
         this.datosAprendiz(personaId)
         await this.guardarAprendiz(this.dataAprendiz);
         await this.$nextTick();
         
-        this.actualizarRetorno('retorno');
+        await this.consultarAprendiz(this.aprendiz.codigo);
         this.$router.push('fichaAntropometrica');
       } catch (error) {
         console.error("Error al guardar aprendiz:", error);
@@ -193,6 +209,10 @@ export default {
         console.log('persona: ',this.persona);
         console.log('personaId: ', personaId);
 
+        const formData = new FormData();
+        formData.append('file', this.foto);
+        await this.subirFotoPersona({codigo: personaId, formData});
+
         this.datosAprendiz(personaId);
         const idAprendiz = this.aprendiz?.codigo;
         await this.actualizarAprendiz({codigo: idAprendiz, data: this.dataAprendiz});
@@ -207,6 +227,8 @@ export default {
     },
 
     async read(value){
+      this.imagePreview = require('@/assets/foto150.png');
+      await this.$nextTick();
       await this.consultarAprendiz(value);
       await this.consultarPersona(this.aprendiz?.persona?.codigo);
       await this.consultarTipoDocumento(this.persona?.tipoDocumento?.codigo); 
@@ -214,6 +236,33 @@ export default {
       await this.consultarFormacion(this.ficha?.formacion?.codigo);
       await this.$nextTick();
       this.cargarDatos();
+    },
+    urlImagen(){
+      const baseUrl = 'http://localhost:8080';
+      if(this.persona.foto){
+        this.imagePreview = this.persona.foto
+          ? `${baseUrl}${this.persona.foto}`
+          : require('@/assets/foto150.png');
+        } else{
+          this.imagePreview = require('@/assets/foto150.png');
+        }
+    },
+
+    triggerFileInput() {
+      this.$refs.fileInput.click(); // Simula un clic en el input de archivo
+    },
+
+    onFileChange(event) {
+      this.imagePreview = require('@/assets/foto150.png');
+      const file = event.target.files[0];
+      if (file) {
+        this.foto = file;
+      // Crear una URL para la previsualización
+      this.imagePreview = URL.createObjectURL(file);
+      }
+      else{
+        this.urlImagen();
+      }
     },
 
     async compararDatos() {
@@ -284,3 +333,13 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.container2{
+  display: grid;
+  justify-content: center;
+}
+.form-group{
+  width: 350px;
+}
+</style>

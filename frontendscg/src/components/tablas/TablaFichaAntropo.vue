@@ -1,7 +1,8 @@
 <template>
     <!--Tabla que lista todos los registros de la entidad-->
-    <div class="containerT" id="scroll">
+    <div class="containerT">
       <h1>Fichas Antropometricas</h1>
+      <div id="scroll">
       <table>
         <thead>
           <tr>
@@ -16,7 +17,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr id="fila2" v-for="(item,index) in listaFiltrada" :key="index" @click="consultarbyId(item.codigo)">
+          <tr id="fila2" v-for="(item,index) in fichasFiltradas" :key="index" @click="consultarbyId(item.codigo)">
             <td>{{ item.numControl }}</td>
             <td>{{ item.fecha }}</td>
             <td>{{ item.altura }} m</td>
@@ -32,10 +33,11 @@
         </tbody>
       </table>
     </div>
+  </div>
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
   export default {
     data(){
       return{
@@ -47,11 +49,21 @@ import { mapActions, mapState } from "vuex";
       ...mapState('aprendiz',['aprendiz']),
       ...mapState('fichaAntropometrica',['fichaAntropoAll','fichaAntropo']),
       ...mapState('perimetros',['perimetrosAll','perimetros']),
-      ...mapState(['retorno','retorno3'])},
+      ...mapState(['retorno','retorno3','searchQuery']),
+
+      fichasFiltradas() {
+        const query = this.searchQuery;
+        return this.listaFiltrada.filter(item =>
+          item.fecha.includes(query)
+        );
+      }
+    },
     methods: {
+      ...mapMutations(['clearSearchQuery']),
       ...mapActions('aprendiz',['consultarAprendiz']),
       ...mapActions('fichaAntropometrica',['consultarFichaAntropoAll','eliminarFichaAntropo','consultarFichaAntropo']),
       ...mapActions('perimetros',['consultarPerimetrosAll','consultarPerimetros']),
+      ...mapMutations('fichaAntropometrica',['setFichaAntropoAll']),
 
       async eliminar(value){
         try{
@@ -70,6 +82,8 @@ import { mapActions, mapState } from "vuex";
         this.listaFiltrada = this.fichaAntropoAll
           .filter(item => item.aprendiz.codigo === this.aprendiz.codigo);
         console.log('fichaAll: ', this.fichaAntropoAll);
+        this.setFichaAntropoAll(this.listaFiltrada);
+        console.log('Filtrado_: ', this.listaFiltrada);
       },
       consultarbyId(value){
         this.$emit('ById', value, this.listaFiltrada);
@@ -146,6 +160,7 @@ import { mapActions, mapState } from "vuex";
       },
     },
     mounted(){
+      this.clearSearchQuery();
       this.formulario();
       this.filtrarAprendiz();
     },

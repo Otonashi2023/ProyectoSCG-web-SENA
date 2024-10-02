@@ -10,7 +10,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr id="fila2" v-for="nombre in nombres" :key="nombre.codigo" @click="() => {callMetodoN(nombre.codigo); consultarbyId(nombre.codigo);}">
+          <tr id="fila2" v-for="nombre in formacionesFiltrados" :key="nombre.codigo" @click="() => {callMetodoN(nombre.codigo); consultarbyId(nombre.codigo);}">
             <td>{{ nombre.nombre }}</td>
             <td id="alibutton">
                 <font-awesome-icon icon="edit" id="editar" @click="actualizar(nombre.codigo)"/>
@@ -23,7 +23,7 @@
 </template>
 <script>
 import axios from "axios";
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
   //contructor de las variables 
   export default {
     data(){
@@ -34,8 +34,17 @@ import { mapActions, mapState } from "vuex";
     },
     computed:{
       ...mapState('formacion',['formacion']),
-      ...mapState(['retorno2'])},
+      ...mapState(['retorno2','searchQuery']),
+
+      formacionesFiltrados() {
+        const query = this.searchQuery;
+        return this.nombres.filter(item =>
+          item.nombre.toLowerCase().includes(query)
+        );
+      },
+    },
     methods: {
+      ...mapMutations(['clearSearchQuery']),
       ...mapActions('formacion',['consultarFormacion','limpiarFormacion']),
       ...mapActions(['actualizarDato4']),
 
@@ -44,6 +53,7 @@ import { mapActions, mapState } from "vuex";
         axios.get("http://localhost:8080/api/formacion/listar")
         .then((response)=>{
           this.nombres= response.data;
+          console.log('NOMBRES: ', this.nombres);
           this.codigo=null;
         })
         .catch((error)=>{
@@ -97,7 +107,8 @@ import { mapActions, mapState } from "vuex";
       }
     },
     mounted(){
-        this.obtenerFormaciones();
+      this.clearSearchQuery();
+      this.obtenerFormaciones();
     },
   }
 </script>

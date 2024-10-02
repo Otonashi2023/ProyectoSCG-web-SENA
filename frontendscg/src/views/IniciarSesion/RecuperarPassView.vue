@@ -1,4 +1,5 @@
 <template>
+    <div v-if="modal"><WaitMoment/></div>
     <div class="inicio">
         <div class="login">
             <h1>Recuperar cuenta</h1>
@@ -21,16 +22,43 @@
 </template>
 
 <script>
+import WaitMoment from '@/components/modal/WaitMoment.vue';
+import axios from 'axios';
+import { mapActions } from 'vuex';
+
 export default{
+    name:'RecuperarPassView',
+    components:{
+        WaitMoment,
+    },
     data(){
         return{
-            correo: ""
+            correo: "",
+            modal: false,
         }
     },
     methods:{
-        enviada(){
-        this.$router.push({name:'solicitudEnviada'});
-        }
+        ...mapActions(['registrarEmail']),
+
+        async enviada() {
+            try {
+                this.modal = true;
+                // Enviar la solicitud POST a la API de Spring
+                await axios.post('http://localhost:8080/api/usuario/enviarCorreo', {
+                    correo: this.correo
+                });
+                
+                this.registrarEmail(this.correo);
+                // Redirigir a la página de confirmación después del éxito
+                this.$router.push({ name: 'solicitudEnviada' });
+                this.modal = false;
+            } catch (error) {
+                console.error("Error al enviar el correo", error);
+                alert("Hubo un problema al enviar el correo. Inténtelo nuevamente.");
+                this.modal = false;
+
+            }
+        },
     },
     mounted() {
         this.$refs.myInput.focus();
