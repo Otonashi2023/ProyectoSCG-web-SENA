@@ -1,8 +1,15 @@
 <template>
     <div class="modal-fondo">
         <div class="modal-contenido">
-            <font-awesome-icon icon="eye-slash" style="display:grid;justify-content:right;" @click="cerrarScan"/>
-            <h3>Escanear Código QR</h3>
+          <div style="display: grid; grid-template-columns: 1fr auto 1fr;">
+            <div>
+              <font-awesome-icon icon="eye-slash" style="display:grid;justify-content:right;" @click="cerrarScan"/>
+            </div>
+            <div>
+              <h3 style="margin: 0">Escanear Código QR</h3>
+            </div>
+            <div></div>
+          </div>
             <video id="video" style="width: 500px; height: 350px"></video>
             <div v-if="activar" class="json-display">
               <table>
@@ -14,7 +21,7 @@
             </div><br>
             <button @click="ocultar" v-show="boton"> ver informacion </button>
             <br>
-            <button style="margin-top: 10px" @click="toggleScanner">
+            <button style="margin: 10px" @click="toggleScanner">
             {{ isScanning ? 'Detener Escáner' : 'Iniciar Escáner' }}
           </button>
         </div>
@@ -157,11 +164,15 @@ import { mapActions, mapState } from 'vuex';
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
+    z-index: 9999;
     justify-content: center;
     align-items: center;
+    backdrop-filter: blur(10px);
   }
   
   .modal-contenido {
+    margin: 0;
+    padding: 0;
     background-color: white;
     padding: 20px;
     border-radius: 8px;
@@ -170,8 +181,11 @@ import { mapActions, mapState } from 'vuex';
     overflow-y:auto;
     overflow-x: auto;
     width: auto;
-    height: 76%;
+    height: auto;
     white-space: nowrap;
+    backdrop-filter: blur(10px);
+    filter: none;
+    transform: none;
   }
   .json-display {
   margin-top: 20px;

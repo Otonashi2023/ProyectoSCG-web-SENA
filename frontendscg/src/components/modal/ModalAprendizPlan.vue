@@ -135,64 +135,58 @@
         },
 
         async descargarTablaComoPDF() {
-  this.download = false;
-  this.$nextTick(async () => {
-    const tabla = document.getElementById('tabla-para-descargar');
-    const modal = this.$refs.modal;
+          this.download = false;
+          this.$nextTick(async () => {
+            const tabla = document.getElementById('tabla-para-descargar');
+            const modal = this.$refs.modal;
 
-    if (tabla) {
-      const originalOverflow = tabla.style.overflow;
-      tabla.style.overflow = 'visible';
-      tabla.style.maxHeight = 'visible';
+            if (tabla) {
+              const originalOverflow = tabla.style.overflow;
+              tabla.style.overflow = 'visible';
+              tabla.style.maxHeight = 'visible';
 
-      // Expandir el modal temporalmente
-      modal.style.width = '100%';
-      modal.style.height = '100%'; // Cambia a 'auto' para ajustar el tamaño
-      modal.style.overflow = 'visible';
+              // Expandir el modal temporalmente
+              modal.style.width = '100%';
+              modal.style.height = 'auto'; // Cambia a 'auto' para ajustar el tamaño
+              modal.style.overflow = 'visible';
 
-      // Captura la tabla como imagen
-      const canvas = await html2canvas(tabla, { scale: 2 });
-      const imgData = canvas.toDataURL('image/png');
+              // Captura la tabla como imagen
+              const canvas = await html2canvas(tabla, { scale: 2 });
+              const imgData = canvas.toDataURL('image/png');
 
-      // Crear un PDF horizontal
-      const pdf = new jsPDF('landscape', 'mm', 'a4');
+              // Crear un PDF horizontal
+              const pdf = new jsPDF('landscape', 'mm', 'a4');
 
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = pageWidth;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+              const pageWidth = pdf.internal.pageSize.getWidth();
+              const pageHeight = pdf.internal.pageSize.getHeight();
+              const imgWidth = pageWidth;
+              const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-      let positionY = 0;
+              let positionY = 0;
 
-      while (positionY < imgHeight) {
-        const remainingHeight = imgHeight - positionY;
-        const finalImgHeight = Math.min(remainingHeight, pageHeight);
+              while (positionY < imgHeight) {
+                const remainingHeight = imgHeight - positionY;
+                const finalImgHeight = Math.min(remainingHeight, pageHeight);
 
-        pdf.addImage(imgData, 'PNG', 0, positionY * (pageWidth / imgWidth), imgWidth, finalImgHeight * (pageWidth / imgWidth), undefined, 'FAST');
+                pdf.addImage(imgData, 'PNG', 0, positionY * (pageWidth / imgWidth), imgWidth, finalImgHeight * (pageWidth / imgWidth), undefined, 'FAST');
 
-        positionY += finalImgHeight;
+                positionY += finalImgHeight;
+              }
 
-        if (positionY < imgHeight) {
-          pdf.addPage();
-        }
-      }
+              pdf.save('tabla.pdf');
 
-      pdf.save('tabla.pdf');
-
-      // Restaurar el estilo original
-      tabla.style.overflow = originalOverflow;
-      tabla.style.maxHeight = 'none';
-      modal.style.width = ''; // Restaurar el ancho original
-      modal.style.height = ''; // Restaurar la altura original
-      modal.style.overflow = ''; // Restaurar el estilo original
-    } else {
-      console.error('No se encontró el elemento con id "tabla-para-descargar".');
-    }
-  });
-},
-
-
-              
+              // Restaurar el estilo original
+              tabla.style.overflow = originalOverflow;
+              tabla.style.maxHeight = 'none';
+              modal.style.width = ''; // Restaurar el ancho original
+              modal.style.height = ''; // Restaurar la altura original
+              modal.style.overflow = ''; // Restaurar el estilo original
+            } else {
+              console.error('No se encontró el elemento con id "tabla-para-descargar".');
+            }
+          });
+        },
+            
         cerrarModal(){
           const modal = false;
           this.$emit('verModal', modal);
@@ -213,25 +207,25 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
+    backdrop-filter: blur(10px);
   }
   .modal-content {
-    position: absolute;
-    top: 47%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    background: white;
+    background-color: white;
     padding: 20px;
-    border-radius: 5px;
-    width: max-content;
-    max-width: max-content;    
+    border-radius: 8px;
+    width: 450px;
     text-align: center;
-    max-height: max-content;
-    height: max-content
-    
+    overflow-y:auto;
+    overflow-x: auto;
+    width: 70%;
+    height:76%;
+    white-space: nowrap;
+    filter: none;
+    transform: none;
   }
   .loader img {
   width: 50px;

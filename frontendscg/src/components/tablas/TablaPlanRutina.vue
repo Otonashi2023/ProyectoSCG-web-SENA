@@ -14,7 +14,7 @@
     <tbody>
       <tr id="fila2" v-for="(plan, index) in planesFiltrados" :key="index" @click ="callMetodoP(plan.plan.codigo)">
         <td>{{ plan.plan.tipoPlan.nombre }}_(<span style="color: #EA0234; font-weight: 600;">{{ plan.plan.meses }}</span>)</td>
-        <td>
+        <td style="display: grid; justify-content:  center">
             <tr v-for="(rutina, i) in plan.rutinas" :key="i">
               <td style="">
                 {{ rutina.tipoRutina.nombre }}_(<span style="color:#00B69B;font-weight: bold;">{{ rutina.numero }}</span>)
@@ -40,8 +40,14 @@
             </tr>
         </td>
         <td id="alibutton">
-          <font-awesome-icon icon="edit" id="editar" @click.stop="consultarbyId(plan.plan.codigo)"/>
-          <font-awesome-icon icon="trash" id="eliminar" @click.stop="removeAllByNombre(plan.plan.codigo)"/>
+          <tr style="display: grid;grid-template-columns: auto auto;">
+            <div>
+              <font-awesome-icon icon="edit" id="editar" @click.stop="consultarbyId(plan.plan.codigo)"/>
+            </div>
+            <div>
+              <font-awesome-icon icon="trash" id="eliminar" @click.stop="removeAllByNombre(plan.plan.codigo)"/>
+            </div>
+          </tr>
         </td> 
       </tr>
     </tbody>
@@ -69,6 +75,9 @@
 
       planesFiltrados() {
         const query = this.searchQuery;
+        if (!Array.isArray(this.finalData)) {
+          return [];
+        }
         return this.finalData.filter(plan =>{
           const planCoincide = plan.plan.tipoPlan.nombre.toLowerCase().includes(query) ||
                               plan.plan.meses.toString().includes(query);

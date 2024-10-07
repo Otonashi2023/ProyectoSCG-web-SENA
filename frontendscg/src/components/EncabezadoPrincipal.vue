@@ -9,7 +9,7 @@
         <span v-show="scan"><ScannerQR @cerrarScan="cerrarScan"/></span>
 
         <img :src="imagePreview" alt="Imagen perfil" style="border-radius: 50%;">
-        <div style="display:grid; text-align: right">
+        <div style="display:grid; text-align: left;">
             <span id="usuario">{{ nombre }} {{ apellido }}</span>
             <span id="rol">{{ rol }}</span> 
         </div>

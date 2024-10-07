@@ -9,7 +9,7 @@
       <div class="navegacion">
         <EncabezadoPrincipal/>
       </div>
-      <div>
+      <div class="ventana">
         <router-view/>
       </div>  
     </section>
@@ -59,6 +59,7 @@ body{
   display: grid;
   place-items: center;
   height: 100vh;
+  width: 100%;
 }
 .login{
   zoom:85%;
@@ -67,12 +68,12 @@ body{
   background-color: #faf6fa;
   padding: 3rem 1rem 3.75rem 1rem;
   width: 29.5rem;
-  height: 31.25rem;
+  min-height: 31.25rem;
   font-weight: bold;
 }
 
 .contenedor{
-  height: 248px;
+  height: auto;
 }
 
 #fila{
@@ -134,7 +135,7 @@ button:hover{
 #miAlerta {
   display: none; /* Inicialmente oculto */
             position: fixed;
-            top: 12%;
+            top: 17%;
             left: 50%;
             transform: translate(-50%, -50%);
             padding: 20px;
@@ -171,39 +172,39 @@ button:hover{
     --color-beige: #FCD7D4;
 }
 .posicion{
-  position: relative;
-  display: grid;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   place-items: center;
-  height: 100vh;
+  min-height: 100vh;
+  min-width: 100vw;
 }
 .caja{
   font-size: 90%;
   display: grid;
-  /*grid-column-gap: .1rem;*/
-  grid-row-gap: .5rem;
-  grid-template-columns: 1fr 7.5fr;
-  grid-auto-rows: 1fr;
-  height: 100vh;
-  
+  grid-template-columns: auto 1fr;
+  min-height: 100vh; 
+  min-width: 100vw; 
 }
 #menu {
+  font-size: 90%;
   display: grid;
-  grid-column-gap: 0.1rem;
-  grid-row-gap: .1rem;
+  /*grid-column-gap: 0.1rem;*/
+  /*grid-row-gap: .1rem;*/
   grid-template-rows: 0.1fr 0.1fr auto 0.1fr .1fr;
-  grid-auto-rows: 0.1fr;
-  zoom: 90%;
+  /*grid-auto-rows: 0.1fr;*/
   background: var(--color-blanco);
-  width: 220px;
+  width: 200px;
   height: auto;
 }
 #menu .logo {
-  padding: 10px;
+  padding: 7px;
   text-align: center;
   color: var(--color-negro);
 }
 #menu .logo img {
-  width: 80px;
+  width: 60px;
 }
 #menu h2 {
   color: var(--color-negro);
@@ -215,7 +216,7 @@ button:hover{
 }
 #menu .items ul,
 #menu .fondo ul{
-  padding: 0 0 1rem 0;
+  padding: 0;
   margin: 0px;
 }
 #menu .items ul li,
@@ -257,7 +258,10 @@ a:hover{
   height: auto;
 }
 section{
+  position: relative;
   background: var(--color-gris-claro);
+  height: 100%;
+  width: 100%;
 }
 
 #contenido .navegacion {
@@ -268,6 +272,7 @@ section{
     padding: 15px 30px;
     position: relative;
     height: 40px;
+    width: auto;
 }
 
 #contenido .navegacion .busqueda {
@@ -278,6 +283,7 @@ section{
     background: var(--color-gris-claro);
     border: 1px solid var(--color-gris-medio);
     border-radius: 20px;
+    width: auto;
 }
 
 #contenido .navegacion .busqueda span {
@@ -313,7 +319,6 @@ section{
     width: 30px;
     height: 30px;
 }
-
 
 
 /** COMPONENTES */
@@ -388,19 +393,27 @@ section{
   grid-template-columns: auto auto;
   grid-auto-rows: 0.1fr;
 }
+ventana{
+  position: relative;
+  display: grid;
+  justify-content: center;
+  width: 100%;
+}
 .container{
   border-radius: 10px;
-  zoom: 90%;
+  font-size: 90%;
   margin: .5rem;
   /*box-shadow: 0 0 10px rgba(76, 92, 164, 1);*/
   background-color: var(--color-blanco);
   padding-left: 1rem;
   padding-right: 1rem;
   height:90vh;
+  max-width: 100vw;
+  width: auto;
 }
 .containerT{
   border-radius: 10px;
-  zoom: 90%;
+  font-size: 90%;
   margin: .5rem;
   /*box-shadow: 0 0 10px rgba(76, 92, 164, 1);*/
   background-color: var(--color-blanco);
@@ -411,13 +424,17 @@ section{
 
 .container2{
   border-radius: 10px;
-  zoom: 90%;
+  font-size: 90%;
   margin: .5rem;
+  padding: auto;
   /*box-shadow: 0 0 10px rgba(76, 92, 164, 1);*/
   background-color: var(--color-blanco);
   padding-left: 1rem;
   padding-right: 1rem;
-  height:90vh;
+  max-height: 100vh;
+  height: 100%;
+  width: auto;
+  max-width: 100vw;
 }
 .container h1, .container2 h1{
   padding-top: 8px;
@@ -430,6 +447,7 @@ table{
 }
 
 th, td{
+  transition: 0.3s ease;
   text-wrap: balance;
   padding: 8px;
   text-align: left;
@@ -460,11 +478,12 @@ tr:hover .head2 {
 }
 
 #scroll{
+  padding-bottom: 4px;
   border-radius: 8px;
   overflow-x: auto;
   overflow-y: auto;
-  width: auto;
-  height: 72vh;
+  height: 70vh;
+  max-width: 100%;
   white-space: nowrap;
 }
 #scroll2{
@@ -622,7 +641,7 @@ tr:hover .head2 {
   font-weight: bold;
   font-size: 15px;
   text-align: center;
-  width: 130px;
+  width: 90px;
   background: none;
   border: none;
   margin-right: 6px;
@@ -634,7 +653,7 @@ tr:hover .head2 {
   font-weight: bold;
   font-size: 15px;
   text-align: center;
-  width: 130px;
+  width: 90px;
   background: none;
   border: none;
   margin-left: 6px;

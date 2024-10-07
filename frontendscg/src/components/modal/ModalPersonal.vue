@@ -67,6 +67,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    backdrop-filter: blur(10px);
   }
   
   .modal-contenido {
@@ -78,8 +79,11 @@
     overflow-y:auto;
     overflow-x: auto;
     width: auto;
-    height: 60%;
+    height: auto;
     white-space: nowrap;
+    backdrop-filter: blur(10px);
+    filter: none;
+    transform: none;
   }
   
   /*.cerrar {

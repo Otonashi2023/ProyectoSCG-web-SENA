@@ -116,7 +116,7 @@ export default {
       console.log('datos2: ',this.datos2);
       if(this.datos2.length > 0){
         const existe = this.datos2
-        .some(item => item.nombre.codigo === this.dato && item.tipoEjercicio.codigo === this.dato2 && item.musculo.codigo === this.dato3);
+        .some(item => item.nombre.codigo === this.dato && item.tipoEjercicio.codigo === this.dato2 && item.musculo.codigo === this.dato3 && item.codigo != this.datoact2);
         if(existe){
           if(this.dato=== this.nombreCode && 
             this.dato2 === this.tipoEjercicioCode && 

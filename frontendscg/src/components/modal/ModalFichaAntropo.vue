@@ -4,7 +4,7 @@
       <div class="modal-contenido" id="tabla-para-descargar">
         <div style="display: grid;grid-template-columns: 1fr auto;">
           <h3>Ficha Antrpompétrica</h3>
-          <font-awesome-icon icon="file-export" id="editar" style="padding-top:8px;" v-show="download" @click="descargarTablaComoImagen"/>
+          <font-awesome-icon icon="file-export" id="editar" style="padding-top:8px;" v-show="download" @click="descargarTablaComoPDF"/>
         </div>
         <div style="display: grid;grid-template-columns: auto auto">
           <div class="perfil-contenedor" style="padding-left: 10px;">
@@ -17,7 +17,7 @@
             <div id="alineacion"><div id="alignR"><strong>Altura: </strong></div><div id="alignL">{{ fichaAntropo.altura }}</div></div>
             <div id="alineacion"><div id="alignR"><strong>Peso: </strong></div><div id="alignL">{{ fichaAntropo.peso }}</div></div>
             <div id="alineacion"><div id="alignR"><strong>IMC: </strong></div><div id="alignL">{{ fichaAntropo.imc }}</div></div>
-            <div id="alineacion"><div id="alignR"><strong>Estado: </strong></div><div id="alignL" :style="evaluacion(fichaAntropo.imc).style">{{ evaluacion(fichaAntropo.imc).estado }}</div></div>
+            <div id="alineacion"><div id="alignR"><strong>Estado: </strong></div><div id="alignL" :style="evaluacion(fichaAntropo?.imc ||0)?.style">{{ evaluacion(fichaAntropo.imc)?.estado }}</div></div>
             <div id="alineacion"><div id="alignR"><strong>Evaluador: </strong></div><div id="alignL">{{ nombre }} {{ apellido }}</div></div>
             <hr class="separator">
           </div>
@@ -57,6 +57,7 @@
 </template>
 
 <script>
+import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { mapActions, mapState } from 'vuex';
 
@@ -150,11 +151,16 @@ export default {
       this.nombre = this.fichaAntropo?.personal?.persona?.nombres.split(' ')[0];
       this.apellido = this.fichaAntropo?.personal?.persona.apellidos.split(' ')[0];
     },
-    evaluacion(){
+    evaluacion(imc){
+      if (imc === null || imc === undefined) {
+        return { estado: 'Desconocido', style: {} };
+      }
+
       const estadoStyle = {
         estado: '',
         style: {},
       };
+
       const indice = this.fichaAntropo.imc;
 
       if(indice < 18.50  ){
@@ -194,38 +200,54 @@ export default {
       }
       return estadoStyle;
     },
+    
+    async descargarModalComoPDF() {
+  this.download = false;
 
-    descargarTablaComoImagen() {
-        this.download = false;
-        this.$nextTick(() => {
-          const tabla = document.getElementById('tabla-para-descargar');
-          if (tabla) {
-            // Guardar el estilo original de la tabla con scroll
-            const originalOverflow = tabla.style.overflow;
-            
-            // Ajustar el estilo para eliminar el scroll temporalmente
-            tabla.style.overflow = 'visible';
-            tabla.style.maxHeight = 'none'; // Eliminar cualquier límite de altura
-            
-            // Usar html2canvas para capturar la tabla completa
-            html2canvas(tabla, { scrollX: 0, scrollY: 0 }).then((canvas) => {
-              // Restaurar el estilo original de la tabla después de la captura
-              tabla.style.overflow = originalOverflow;
-              tabla.style.maxHeight = '400px';  // Ajusta según el tamaño de tu tabla original
-              
-              // Crear un enlace para descargar la imagen
-              const enlace = document.createElement('a');
-              enlace.href = canvas.toDataURL('image/png');
-              enlace.download = 'tabla.png';
-              enlace.click();
-            }).catch((error) => {
-              console.error('Error capturando la tabla:', error);
-            });
-          } else {
-            console.error('No se encontró el elemento con id "tabla-para-descargar".');
-          }
-        });
-      },
+  const modal = this.$refs.modal;
+
+  if (!modal) {
+    console.error('No se encontró el modal con la referencia "modal".');
+    return;
+  }
+
+  const originalOverflow = modal.style.overflow;
+  modal.style.overflow = 'visible';
+
+  try {
+    await this.$nextTick(); // Esperar a que el DOM esté actualizado
+
+    // Captura el modal como imagen
+    const canvas = await html2canvas(modal, { scale: 2 });
+    const imgData = canvas.toDataURL('image/png');
+
+    // Crear un PDF horizontal
+    const pdf = new jsPDF('landscape', 'mm', 'a4');
+
+    // Añadir el estado del IMC al PDF
+    const estadoImc = this.fichaAntropo?.imc ? this.evaluacion(this.fichaAntropo.imc)?.estado : 'N/A';
+    pdf.text(`Estado del IMC: ${estadoImc}`, 10, 10);
+
+    // Configuración de la imagen
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    // Añadir la imagen del modal al PDF
+    pdf.addImage(imgData, 'PNG', 0, 20, imgWidth, imgHeight, undefined, 'FAST');
+
+    // Guardar el PDF
+    pdf.save('ficha-antropometrica.pdf');
+    
+  } catch (error) {
+    console.error("Error al generar el PDF:", error);
+  } finally {
+    // Restaurar el estilo original
+    modal.style.overflow = originalOverflow;
+  }
+}
+   
+
   },
   mounted(){
     this.nombreEvaluador();
@@ -246,6 +268,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  backdrop-filter: blur(10px);
 }
 
 .modal-contenido {
@@ -259,6 +282,8 @@ export default {
   width: auto;
   height:76%;
   white-space: nowrap;
+  filter: none;
+  transform: none;
 }
 
 /*.cerrar {

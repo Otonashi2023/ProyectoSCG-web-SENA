@@ -27,10 +27,16 @@
             <td>{{ item.personal.persona.correo }}</td>
             <td>{{ item.personal.cargo.nombre }}</td>
             <td style="color: blueviolet; font-weight: 700;width:80px" @click.stop="abrirModal(item.codigo)">ver perfil</td>
-            <td id="alibutton" style="width:120px;">
-                <font-awesome-icon icon="edit" id="editar" @click="actualizar($event, item.codigo)"/>
-                <font-awesome-icon icon="trash" id="eliminar" @click="eliminar($event, item.personal?.persona?.codigo)"/>
-            </td>            
+            <td id="alibutton">
+              <tr style="display: grid;grid-template-columns: auto auto;">
+                  <div>
+                    <font-awesome-icon icon="edit" id="editar" @click="actualizar($event, item.codigo)"/>
+                  </div>
+                  <div>
+                    <font-awesome-icon icon="trash" id="eliminar" @click="eliminar($event, item.personal?.persona?.codigo)"/>
+                  </div>
+                </tr>  
+            </td>           
           </tr>      
         </tbody>
     </table>

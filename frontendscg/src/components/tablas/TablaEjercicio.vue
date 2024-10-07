@@ -27,8 +27,14 @@
             <td>{{ ejercicio.repeticiones }}</td>
             <td>{{ ejercicio.descanso }} min</td>
             <td id="alibutton">
-                <font-awesome-icon icon="edit" id="editar" @click="actualizar(ejercicio.codigo)"/>
-                <font-awesome-icon icon="trash" id="eliminar"  v-if='rele' @click="eliminar(ejercicio.codigo)"/>
+              <tr style="display: grid;grid-template-columns: auto auto;">
+                <div>
+                  <font-awesome-icon icon="edit" id="editar" @click.stop="actualizar(ejercicio.codigo)"/>
+                </div>
+                <div>
+                  <font-awesome-icon icon="trash" id="eliminar" @click.stop="eliminar(ejercicio.codigo)"/>
+                </div>
+              </tr>
             </td>            
           </tr>      
         </tbody>

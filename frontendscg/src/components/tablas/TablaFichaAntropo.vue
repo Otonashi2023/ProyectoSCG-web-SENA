@@ -1,6 +1,6 @@
 <template>
     <!--Tabla que lista todos los registros de la entidad-->
-    <div class="containerT">
+    <div class="container2">
       <h1>Fichas Antropometricas</h1>
       <div id="scroll">
       <table>
@@ -26,9 +26,15 @@
             <td :style="evaluacion(item.imc).style">{{ evaluacion(item.imc).estado }}</td>
             <td style="color: blueviolet; font-weight: 700" @click.stop="abrirModal(item.codigo)">ver Ficha</td>
             <td id="alibutton">
-                <font-awesome-icon icon="edit" id="editar" @click="actualizar(item.codigo)"/>
-                <font-awesome-icon icon="trash" id="eliminar" @click.stop="eliminar(item.codigo)"/>
-            </td>            
+            <tr style="display: grid;grid-template-columns: auto auto;">
+                <div>
+                  <font-awesome-icon icon="edit" id="editar" @click="actualizar(item.codigo)"/>
+                </div>
+                <div>
+                  <font-awesome-icon icon="trash" id="eliminar" @click.stop="eliminar(item.codigo)"/>
+                </div>
+              </tr>  
+            </td>          
           </tr>      
         </tbody>
       </table>

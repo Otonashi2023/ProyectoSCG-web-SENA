@@ -14,7 +14,7 @@
         <tbody>
           <tr id="fila2" v-for="(item, index) in rutinasFiltradas" :key="index" @click="callMetodoR(item.rutina.codigo); consultarbyId(item.rutina.codigo)">
             <td>{{ item.rutina.tipoRutina.nombre}} ({{ item.rutina.numero }})</td>
-            <td>
+            <td style="display: grid; justify-content:  center">
               <tr class="head2">
                 <td id="space">Ejercicio</td>
                 <td id="space">Tipo ejercicio</td>
@@ -33,8 +33,14 @@
               </tr>
             </td>
             <td id="alibutton">
-                <font-awesome-icon icon="edit" id="editar" @click="actualizar(item.rutina.codigo)"/>
-                <font-awesome-icon icon="trash" id="eliminar" v-if='rele' @click.stop="removeAllByNombre(item.rutina.codigo)"/>
+              <tr style="display: grid;grid-template-columns: auto auto;">
+                <div>
+                  <font-awesome-icon icon="edit" id="editar" @click.stop="actualizar(item.rutina.codigo)"/>
+                </div>
+                <div>
+                  <font-awesome-icon icon="trash" id="eliminar" @click.stop="removeAllByNombre(item.rutina.codigo)"/>
+                </div>
+              </tr>
             </td>            
           </tr>      
         </tbody>

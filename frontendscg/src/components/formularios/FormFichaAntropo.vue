@@ -244,10 +244,10 @@ export default{
       if(this.peso > 0 && this.altura > 0){
         this.imc = (this.peso/(this.altura*this.altura)).toFixed(2);
         console.log('imc: ', this.imc);
-        this.evaluacion();
+        this.evaluacion(this.imc);
       } else{
         this.imc =null;
-        this.evaluacion();
+        this.evaluacion(this.imc);
       }
     },
 
@@ -477,7 +477,6 @@ export default{
   },
   mounted(){
     this.cargarDatos();
-    this.limpiarEstado();
   }
 }
 </script>

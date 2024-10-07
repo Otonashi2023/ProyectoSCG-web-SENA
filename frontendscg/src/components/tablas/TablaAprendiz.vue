@@ -26,17 +26,28 @@
           <td>{{ item.persona.cedula }}</td>
           <td>{{ item.ficha.numero}}</td>
           <td>{{ item.ficha.formacion.nombre }}</td>
-          <td style="width: 280px;"><button id="botonA" @click.stop="consultarItem1(item.codigo)">
-              Antropometrico</button>
-            <button id="botonB" @click.stop="consultarItem2(item.codigo)">
-              Planes</button>
+          <td id="alibutton">
+            <tr style="display: grid;grid-template-columns: auto auto;">
+                <div>
+                  <button id="botonA" @click.stop="consultarItem1(item.codigo)">Medidas</button>
+                </div>
+                <div>
+                  <button id="botonB" @click.stop="consultarItem2(item.codigo)">Planes</button>
+                </div>
+              </tr>  
           </td>
           <td style="color: blueviolet; font-weight: 700; width:70px" @click.stop="abrirModal(item.codigo)">ver perfil</td>
           <td><font-awesome-icon icon="qrcode" id="agregar" @click.stop="abrirQR(item.codigo)"/></td>
-          <td id="alibutton" style="width:120px;">
-              <font-awesome-icon icon="edit" id="editar" @click="actualizar(item.codigo)"/>
-              <font-awesome-icon icon="trash" id="eliminar" @click.stop="eliminar(item.persona?.codigo)"/>
-          </td>            
+          <td id="alibutton">
+              <tr style="display: grid;grid-template-columns: auto auto;">
+                <div>
+                  <font-awesome-icon icon="edit" id="editar" @click="actualizar(item.codigo)"/>
+                </div>
+                <div>
+                  <font-awesome-icon icon="trash" id="eliminar" @click.stop="eliminar(item.persona?.codigo)"/>
+                </div>
+              </tr>
+            </td>          
         </tr>      
       </tbody>
     </table>

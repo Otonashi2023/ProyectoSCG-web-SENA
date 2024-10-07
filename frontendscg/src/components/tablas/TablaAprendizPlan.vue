@@ -14,7 +14,7 @@
             <th>Tiempo</th>
             <th>Estado</th>
             <th>Ver</th>
-            <th>Cancelacion</th>
+            <th>Cancelar</th>
             <th id="rigth">Acciones</th>
           </tr>
         </thead>
@@ -26,22 +26,26 @@
             <td>{{ item.finaliza }}</td>
             <td>{{ item.plan.tipoPlan.nombre }}</td>
             <td>{{ item.plan.meses }} meses</td>
-            <td :style="evaluacion(item.finaliza).style">{{ evaluacion(item.codigo).estado }}</td>
+            <td :style="evaluacion(item).style">{{ evaluacion(item).estado }}</td>
             <td style="color: blueviolet; font-weight: 700;" @click.stop="abrirModal(item.codigo)">ver plan</td>
             <td>
               <font-awesome-icon icon="computer-mouse" id="cancelacion" @click.stop="cancelacion(item)"/>
             </td>
             <td id="alibutton">
-                <font-awesome-icon icon="edit" id="editar" @click="actualizar(item.codigo)"/>
-                <font-awesome-icon icon="trash" id="eliminar" @click.stop="eliminar(item.codigo)"/>
+              <tr style="display: grid;grid-template-columns: auto auto;">
+                <div>
+                  <font-awesome-icon icon="edit" id="editar" @click="actualizar(item.codigo)"/>
+                </div>
+                <div>
+                  <font-awesome-icon icon="trash" id="eliminar" @click.stop="eliminar(item.codigo)"/>
+                </div>
+              </tr>
             </td>            
           </tr>      
         </tbody>
     </table>
     </div> 
-    <p>AP:{{ aprendizPlan }}</p>
-    <p>plan:{{ plan }}</p> 
-    <p>aprendiz:{{ aprendiz }}</p>
+    
   </div>
 </template>
 
@@ -114,12 +118,11 @@ export default{
         this.$emit('verModal', modal);
       },
 
-      verificar(){
-        const dateEnd = this.filtro.finaliza;
-        console.log(dateEnd);
-        if(this.filtro.codigo){
+      verificar(value){
+        this.estadoAP();
+        if(this.estadoAP() == 'OK'){
           const today = new Date();
-          const finalDate = new Date(dateEnd);
+          const finalDate = new Date(value);
           const status = finalDate > today ? 'En proceso' : "Terminado";
           return status;
         } else{
@@ -142,11 +145,9 @@ export default{
       },
       
       tofinalizacion() {
-        let dataInput = this.inicio;
-
+        let dataInput = this.filaAP.inicio;
         // Intentar convertir dataInput a una fecha
         let dateInicio = new Date(dataInput);
-
         // Verificar si dataInput es una fecha válida
         if (isNaN(dateInicio.getTime())) {
           console.error("Error: 'inicio' no es una fecha válida.");
@@ -158,7 +159,7 @@ export default{
 
         // Crear una copia de dateInicio para trabajar con la fecha
         let date = new Date(dateInicio);
-        let incrementoMes = this.meses;
+        let incrementoMes = this.filaAP.plan.meses;
         console.log("Incremento de meses:", incrementoMes);
 
         let mesTotal = date.getMonth() + incrementoMes;
@@ -183,26 +184,26 @@ export default{
         }
       },
       estadoAP(){
-        //this.tofinalizacion();
-        if(this.finaliza < this.finaliza1){
-          const status = 'cancelado';
+        this.tofinalizacion();
+        if(this.filaAP.finaliza == this.finaliza1){
+          const status = 'OK';
+          console.log(status);
           return status;
         } else{
-          const status ='OK';
+          const status ='cancelado';
+          console.log(status);
           return status;
         }
       },
 
       evaluacion(value){
-        this.filtradoApPlan;
-        this.filtro =this.filtradoApPlan.filter(item => item.codigo === value);
-        console.log(this.filtro);
-
+        this.filaAP = value;
+        console.log("FilaEvaluacion: ",this.filaAP);
         const estadoStyle = {
           estado: '',
           style: {},
         };
-        const indice = this.verificar(); 
+        const indice = this.verificar(this.filaAP.finaliza); 
         if(indice == 'En proceso' ){
           estadoStyle.estado = 'En proceso';
           estadoStyle.style = {

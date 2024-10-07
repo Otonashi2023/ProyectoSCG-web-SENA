@@ -93,6 +93,7 @@ import { mapActions, mapState } from "vuex";
     display: flex;
     justify-content: center;
     align-items: center;
+    backdrop-filter: blur(10px);
   }
   
   .modal-contenido {
@@ -104,6 +105,8 @@ import { mapActions, mapState } from "vuex";
     width: auto;
     height: auto;
     white-space: nowrap;
+    filter: none;
+    transform: none;
   }
   #tabla-para-descargar {
   margin-bottom: 20px;
