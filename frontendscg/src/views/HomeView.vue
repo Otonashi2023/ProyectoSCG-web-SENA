@@ -1,23 +1,26 @@
 <template>
+  <div>
+    <h1 id="alitext" style="margin-bottom: 20px;">Panel de Control</h1>
+  </div>
   <div class="container2">
-    <h1>Panel de Control</h1>
     <div id="scroll">
       <div style="width:95%;display: grid; grid-template-columns: auto auto;">
-        <div style="width: auto">
-          <h2>Gráfico de Líneas Rectas y Senoidal</h2>
-        <apexchart type="line" height="350" :options="lineOptions" :series="lineSeries"></apexchart>
-        </div>
+        
         <div style="width: auto">
           <h2>Gráfico de Torta (Pastel)</h2>
-        <apexchart type="pie" height="350" :options="pieOptions" :series="pieSeries"></apexchart>
+        <apexchart type="pie" height="350px" :options="pieOptions" :series="pieSeries"></apexchart>
+        </div>
+        <div style="width: auto">
+          <h2>Gráfico de Líneas Rectas y Senoidal</h2>
+        <apexchart type="line" height="350px" :options="lineOptions" :series="lineSeries"></apexchart>
         </div>
         <div>
         <h2>Gráfico de Líneas con Sombras</h2>
-        <apexchart type="line" height="350" :options="chartOptions" :series="seriesData"></apexchart>
+        <apexchart type="line" height="350px" :options="chartOptions" :series="seriesData"></apexchart>
       </div>
       <div style="width: auto">
           <h2>Gráfico de Barras</h2>
-        <apexchart type="bar" height="350" :options="barOptions" :series="barSeries"></apexchart>
+        <apexchart type="bar" height="350px" :options="barOptions" :series="barSeries"></apexchart>
         </div>
       </div>
     </div>

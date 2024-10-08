@@ -16,7 +16,7 @@
         <td>{{ plan.plan.tipoPlan.nombre }}_(<span style="color: #EA0234; font-weight: 600;">{{ plan.plan.meses }}</span>)</td>
         <td style="display: grid; justify-content:  center">
             <tr v-for="(rutina, i) in plan.rutinas" :key="i">
-              <td style="">
+              <td style="text-align:center;border-collapse: collapse; width: 100px;">
                 {{ rutina.tipoRutina.nombre }}_(<span style="color:#00B69B;font-weight: bold;">{{ rutina.numero }}</span>)
               </td>
                 <td>

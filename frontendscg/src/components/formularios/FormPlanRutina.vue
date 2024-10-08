@@ -1,67 +1,67 @@
 <template>
-    <div class="container" id="form">
-      <h1>Formulario Plan de Entrenamiento</h1>
-      <form @submit.prevent="servicio()" >
-        <div class="comp-form-group">
-          <div class="form-group">
-            <label for="plan">Plan: {{ dato9 }} meses</label>
-            <input type="text" @click="callMetodoP"  name="plan" id="input2" v-model="plan" placeholder="haz click para ingresar el plan" readonly>
-          </div>
-          <div class="form-group">
-            <label for="rutina">Rutina:</label>
-            <input type="text" @click="callMetodoR" name="rutina" id="input2" v-model="rutinaN" placeholder="haz click para ingresar la rutina" readonly>
-          </div>
-          <div class="form-group">
-            <div id="formbutton">
-                <button id="guardar" type="submit" name="guardar" v-if="salvar">Guardar</button><span style="color:orangered;margin-left: 5px;">{{ mensaje }}</span>
-                <button id="guardar" type="submit" name="actulizar" v-if="modificar">Actualizar</button>
-                <font-awesome-icon :icon="['fas', 'right-left']" id="cerrar3" v-if="modificar" @click="cerrar"/>
-            </div>
+  <div class="container" id="form">
+    <h1>Formulario Plan de Entrenamiento</h1>
+    <form @submit.prevent="servicio()" >
+      <div class="comp-form-group">
+        <div class="form-group">
+          <label for="plan">Plan: {{ dato9 }} meses</label>
+          <input type="text" @click="callMetodoP"  name="plan" id="input2" v-model="plan" placeholder="haz click para ingresar el plan" readonly>
+        </div>
+        <div class="form-group">
+          <label for="rutina">Rutina:</label>
+          <input type="text" @click="callMetodoR" name="rutina" id="input2" v-model="rutinaN" placeholder="haz click para ingresar la rutina" readonly>
+        </div>
+        <div class="form-group">
+          <div id="formbutton">
+              <button id="guardar" type="submit" name="guardar" v-if="salvar">Guardar</button><span style="color:orangered;margin-left: 5px;">{{ mensaje }}</span>
+              <button id="guardar" type="submit" name="actulizar" v-if="modificar">Actualizar</button>
+              <font-awesome-icon :icon="['fas', 'right-left']" id="cerrar3" v-if="modificar" @click="cerrar"/>
           </div>
         </div>
-      </form>
-      <div class="container2" style="height: 68vh;" v-if="tabla">
-        <h1>Tabla  de rutinas</h1>
-        <div id="scroll2">
-          <table>
-            <thead>
-              <tr>
-                <th>Rutina (version)</th>
-                <th style="text-align:center">Ejercicios</th>
-                <th id="rigth">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr id="fila2" v-for="(item, index) in rutinas" :key="index">
-                <td>{{ item.rutina.tipoRutina.nombre}} ({{ item.rutina.numero }})</td>
-                <td>
-                  <tr class="head2">
-                    <td id="space">Ejercicio</td>
-                    <td id="space">Tipo ejercicio</td>
-                    <td id="space">Musculo</td>
-                    <td id="space">Series</td>
-                    <td id="space">Repetiociones</td>
-                    <td id="space">Descanso</td>
-                  </tr>
-                  <tr v-for="(ejercicio, i) in item.ejercicios" :key="i">
-                    <td id="space">{{ ejercicio.nombre.nombre }}</td>
-                    <td id="space">{{ ejercicio.tipoEjercicio.nombre }}</td>
-                    <td id="space">{{ ejercicio.musculo.nombre }}</td>
-                    <td id="space">{{ ejercicio.series }}</td>
-                    <td id="space">{{ ejercicio.repeticiones }}</td>
-                    <td id="space">{{ ejercicio.descanso }}</td>
-                  </tr>
-                </td>
-                <td id="alibutton">
-                    <font-awesome-icon icon="trash" id="eliminar" @click="verificar(item.rutina.codigo)"/>
-                </td>            
-              </tr>      
-            </tbody>
-          </table>
-        </div>      
       </div>
+    </form>
+    <div class="container2" style="height: 68vh;" v-if="tabla">
+      <h1>Tabla  de rutinas</h1>
+      <div id="scroll2">
+        <table>
+          <thead>
+            <tr>
+              <th>Rutina (version)</th>
+              <th style="text-align:center">Ejercicios</th>
+              <th id="rigth">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="fila2" v-for="(item, index) in filterRutinas" :key="index">
+              <td>{{ item.rutina.tipoRutina.nombre}} ({{ item.rutina.numero }})</td>
+              <td>
+                <tr class="head2">
+                  <td id="space">Ejercicio</td>
+                  <td id="space">Tipo ejercicio</td>
+                  <td id="space">Musculo</td>
+                  <td id="space">Series</td>
+                  <td id="space">Repetiociones</td>
+                  <td id="space">Descanso</td>
+                </tr>
+                <tr v-for="(ejercicio, i) in item.ejercicios" :key="i">
+                  <td id="space">{{ ejercicio.nombre.nombre }}</td>
+                  <td id="space">{{ ejercicio.tipoEjercicio.nombre }}</td>
+                  <td id="space">{{ ejercicio.musculo.nombre }}</td>
+                  <td id="space">{{ ejercicio.series }}</td>
+                  <td id="space">{{ ejercicio.repeticiones }}</td>
+                  <td id="space">{{ ejercicio.descanso }}</td>
+                </tr>
+              </td>
+              <td id="alibutton">
+                  <font-awesome-icon icon="trash" id="eliminar" @click="verificar(item.rutina.codigo)"/>
+              </td>            
+            </tr>      
+          </tbody>
+        </table>
+      </div>      
     </div>
-  </template>
+  </div>
+</template>
   
   <script>
   import { mapActions, mapState } from "vuex";
@@ -81,6 +81,10 @@
     computed:{
       ...mapState('variables',['rutinas','arrayR','valor2','datos3','activeM','groupFilter2']),
       ...mapState(['dato5','dato6','dato9','plan','datoact1', 'retorno3','datoact0']),
+
+      filterRutinas() {
+        return this.rutinas.filter(rutina => rutina != null || rutina != undefined);
+      },
     },
     //metodos CRUD
     methods:{
@@ -224,6 +228,7 @@
               console.log('CODIGO DE ENTRADA: ',this.codigo);
               try{
                 const response = await axios.get('http://localhost:8080/api/rutinaejercicio/listar');
+                await this.$nextTick();
                 const listData = response.data;
                 if (Array.isArray(listData)) {
                   this.finalData = this.groupDataById(listData);
@@ -235,6 +240,7 @@
                 this.nuevaRutina(toSave);
                 this.actionRutinas();
                 this.limpiarDato6();
+                //this.resultRutina = this.rutinas.filter(rutina => rutina != null || rutina != undefined);
                 console.log('ver las rutinas: ',this.rutinas);
               } catch(error) {
                 console.error('Error al obtener los detalles de la rutina: ', error);

@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from "vuex";
+import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
 import axios from "axios";
 export default {
   data() {
@@ -74,12 +74,14 @@ export default {
   computed:{
     ...mapState('datosEjercicio',['nombreCode','tipoEjercicioCode','musculoCode']),
     ...mapState('variables',['datos2']),
-    ...mapState(['dato','dato2','dato3','nombre','tipoEjercicio','musculo','retorno','datoact2','dato7']),...mapGetters(['getNombre','getTipoEjercicio','getMusculo']),
+    ...mapState(['dato','dato2','dato3','nombre','tipoEjercicio','musculo','retorno','datoact2','dato7']),
+    ...mapGetters(['getNombre','getTipoEjercicio','getMusculo']),
     ...mapGetters('datosEjercicio',['getSeries','getRepeticiones','getDescanso']),
     ...mapState('ejercicio',['imagen']),
   },
 //metodos CRUD
   methods:{
+    ...mapMutations(['setDevice1']),
     ...mapActions(['actualizarDato7','actualizarRetorno2','actualizarDato','actualizarDato2','actualizarDato3','registrarNombre',
     'registrarTipoEjercicio','registrarMusculo','limpiarDatoact2','actualizarDatoact2','registrarEjercicio']),
     ...mapActions('datosEjercicio',['actualizarSeries','actualizarRepeticiones','actualizarDescanso']),
@@ -210,6 +212,7 @@ export default {
         console.log("Ejercicio actualizado con exito", response.data);
         this.$emit('leave');
         if(this.retorno=='retorno'){
+          this.setDevice1(true);
           this.actualizarDato7(this.codigo);
           this.antesderoutear();
           this.$router.push('rutinaEjercicio');

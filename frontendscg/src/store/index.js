@@ -29,6 +29,8 @@ export default createStore({
     retorno3: "",
     retorno4: null,
 
+    device1: false,
+
     datoact0: null,
     datoact1: null,
     datoact2: null,
@@ -125,6 +127,10 @@ export default createStore({
     },
     clearRetorno4(state){
       state.retorno4 = null;
+    },
+
+    setDevice1(state, value){
+      state.device1 =value;
     },
 
     setDatoact0(state, nuevodato){

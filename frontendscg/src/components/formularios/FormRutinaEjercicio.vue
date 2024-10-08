@@ -53,7 +53,8 @@
           </tr>      
         </tbody>
       </table>
-      </div>      
+      </div>
+      <p>{{ ejercicio }}</p>    
     </div>
   </div>
 </template>
@@ -64,6 +65,7 @@ import axios from "axios";
 export default {
   data() {
     return{
+      ejercicio: '',
       salvar: true,
       modificar: false,
       tabla: false,

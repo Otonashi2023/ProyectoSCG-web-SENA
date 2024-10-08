@@ -63,7 +63,7 @@ export default {
   },
   computed:{
     ...mapState('variables',['groupFilter']),
-    ...mapState(['retorno','retorno3','searchQuery']),
+    ...mapState(['retorno','retorno3','searchQuery','device1']),
 
     rutinasFiltradas() {
         const query = this.searchQuery;
@@ -81,7 +81,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations(['clearSearchQuery']),
+    ...mapMutations(['clearSearchQuery','setDevice1']),
     ...mapActions('variables',['limpiarEjercicios','actionDatos','actionGroupFilter']),
     ...mapActions(['limpiarDatoact1']),
 
@@ -170,7 +170,11 @@ export default {
       },
     formulario(){
       if(this.retorno=='retorno'){
+        if(this.device1 == false){
         this.$emit('goForm');
+        }else{
+          this.setDevice1(false);
+        }
       }
     },
     desactivar(){
