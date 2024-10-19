@@ -41,57 +41,57 @@
         <div class="comp-form-group">
           <div class="form-group">
             <label for="cabeza">Cabeza: </label>
-            <input type="number" step="0.01" name="cabeza" id="input2" v-model="cabeza" placeholder="ingrese medida" required>
+            <input type="number" step="0.01" name="cabeza" id="input2" v-model="cabeza" placeholder="ingrese medida en cm" required>
           </div>
           <div class="form-group">
             <label for="cuello">Cuello: </label>
-            <input type="number" step="0.01" name="cuello" id="input2" v-model="cuello" placeholder="ingrese medida" requerid>
+            <input type="number" step="0.01" name="cuello" id="input2" v-model="cuello" placeholder="ingrese medida en cm" requerid>
           </div>
           <div class="form-group">
             <label for="brazoRelax">Brazo Relax: </label>
-            <input type="number" step="0.01" name="brazoRelax" id="input2" v-model="brazoRelax" placeholder="ingrese medida" required>
+            <input type="number" step="0.01" name="brazoRelax" id="input2" v-model="brazoRelax" placeholder="ingrese medida en cm" required>
             </div>
           <div class="form-group">
             <label for="brazoTenso">Brazo Tenso: </label>
-            <input type="number" step="0.01" name="brazoTenso" id="input2" v-model="brazoTenso" placeholder="ingrese medida" required>
+            <input type="number" step="0.01" name="brazoTenso" id="input2" v-model="brazoTenso" placeholder="ingrese medida en cm" required>
           </div>
           <div class="form-group">
             <label for="antebrazo">Antebrazo:</label>
-            <input type="number" step="0.01" name="antebrazo" id="input2" v-model="antebrazo" placeholder="ingrese medida " required>
+            <input type="number" step="0.01" name="antebrazo" id="input2" v-model="antebrazo" placeholder="ingrese medida en cm" required>
           </div>
           <div class="form-group">
             <label for="muñeca">Muñeca:</label>
-            <input type="number" step="0.01" name="muñeca" id="input2" v-model="muñeca" placeholder="ingrese medida " required>
+            <input type="number" step="0.01" name="muñeca" id="input2" v-model="muñeca" placeholder="ingrese medida en cm" required>
           </div>
           <div>
             <div class="form-group">
               <label for="torax">Torax: </label>
-              <input type="number" step="0.01" name="torax" id="input2" v-model="torax" placeholder="ingrese medida" required>
+              <input type="number" step="0.01" name="torax" id="input2" v-model="torax" placeholder="ingrese medida en cm" required>
             </div>
           </div>
           <div class="form-group">
             <label for="cintura">Cintura: </label>
-            <input type="number" step="0.01" name="cintura" id="input2" v-model="cintura" placeholder="ingrese medida" required>
+            <input type="number" step="0.01" name="cintura" id="input2" v-model="cintura" placeholder="ingrese medida en cm" required>
           </div>
           <div class="form-group">
             <label for="cadera">Cadera: </label>
-            <input type="number" step="0.01" name="cadera" id="input2" v-model="cadera" placeholder="ingrese medida" required>
+            <input type="number" step="0.01" name="cadera" id="input2" v-model="cadera" placeholder="ingrese medida en cm" required>
           </div>
           <div class="form-group">
             <label for="musloMax">Muslo Max: </label>
-            <input type="number" step="0.01" name="musloMax" id="input2" v-model="musloMax" placeholder="ingrese medida" required>
+            <input type="number" step="0.01" name="musloMax" id="input2" v-model="musloMax" placeholder="ingrese medida en cm" required>
             </div>
             <div class="form-group">
             <label for="musloMin">Muslo Min: </label>
-            <input type="number" step="0.01" name="musloMin" id="input2" v-model="musloMin" placeholder="ingrese medida" required>
+            <input type="number" step="0.01" name="musloMin" id="input2" v-model="musloMin" placeholder="ingrese medida en cm" required>
             </div>
           <div class="form-group">
             <label for="pantorrillaMax">Pantorrilla Max:</label>
-            <input type="number" step="0.01" name="pantorrillaMax" id="input2" v-model="pantorrillaMax" placeholder="ingrese medida " required>
+            <input type="number" step="0.01" name="pantorrillaMax" id="input2" v-model="pantorrillaMax" placeholder="ingrese medida en cm" required>
           </div>
           <div class="form-group">
             <label for="pantorrillaMin">Pantorrilla Min:</label>
-            <input type="number" step="0.01" name="pantorrillaMin" id="input2" v-model="pantorrillaMin" placeholder="ingrese medida " required>
+            <input type="number" step="0.01" name="pantorrillaMin" id="input2" v-model="pantorrillaMin" placeholder="ingrese medida en cm" required>
           </div>
         </div>
 

@@ -71,10 +71,8 @@ const actions = {
   },
   async consultarPersona({ commit }, codigo) {
     try {
-      console.log('mirando el codigo que llega al modulo persona:',codigo)
       const response = await getPersonaApi(codigo);
       commit('setPersona', response.data);
-      console.log('desde modulo persona:',response.data);
     } catch (error) {
       console.error("Error consultar Persona:", error);
     }

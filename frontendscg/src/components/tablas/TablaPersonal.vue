@@ -62,7 +62,8 @@ export default{
           item.personal.cargo.nombre.toLowerCase().includes(query) ||
           item.personal.persona.celular.toString().includes(query) ||
           item.personal.persona.correo.toLowerCase().includes(query)
-        );
+        )
+        .reverse();
       },
     },
     methods:{
@@ -102,7 +103,6 @@ export default{
         }
       },
       formulario(){
-        console.log('aqui en tabla personal', this.retorno2);
         if(this.retorno2=='retorno'){
           this.$emit('goForm');
         }

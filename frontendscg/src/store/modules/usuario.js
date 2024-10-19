@@ -20,9 +20,7 @@ const mutations = {
     state.usuario = {...data};
   },
   setUsuarios(state, data){
-    console.log('data usuarios: ', data);
     state.usuarios = data;
-    console.log('resultado:', state.usuarios);
   },
   clearUsuario(state) {
     state.usuario = {
@@ -44,7 +42,6 @@ const actions = {
   async consultarAllUsuarios({ commit }) {
     try {
       const response = await getUsuarioAllApi();
-      console.log('resoponse:',response.data);
       commit('setUsuarios', response.data);
     } catch (error) {
       console.error("Error consultar all Usuarios:", error);

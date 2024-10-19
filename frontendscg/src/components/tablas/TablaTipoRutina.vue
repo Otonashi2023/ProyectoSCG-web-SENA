@@ -1,6 +1,6 @@
 <template>
     <!--Tabla que lista todos los registros de la entidad-->
-    <div class="containerT" id="scroll">
+    <div class="containerT" id="scroll2">
       <h1>Tabla de tipos de rutina</h1>
       <table>
         <thead>
@@ -11,7 +11,7 @@
         </thead>
         <tbody>
           <tr id="fila2" v-for="nombre in tipoRutinasFiltradas" :key="nombre.codigo"  @click="() => {callMetodoN(); consultarbyId(nombre.codigo); registrarNombre(nombre.nombre)}">
-            <td>{{ nombre.nombre}}</td>
+            <td>{{ nombre.nombre }}</td>
             <td id="alibutton">
                 <font-awesome-icon icon="edit" id="editar" @click="actualizar(nombre.codigo)"/>
                 <font-awesome-icon icon="trash" id="eliminar" @click="eliminar(nombre.codigo)"/>
@@ -39,7 +39,8 @@ import { mapActions, mapMutations, mapState } from "vuex";
         const query = this.searchQuery;
         return this.nombres.filter(item =>
           item.nombre.toLowerCase().includes(query)
-        );
+        )
+        .reverse();
       },
     },
     methods: {

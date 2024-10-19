@@ -57,7 +57,6 @@ export default{
         ...mapActions('usuario',['consultarUsuario','consultarAllUsuarios','limpiarUsuario']),
 
         urlImagen(){
-            console.log('Usuario desde encabezado: ',this.usuario);
             const baseUrl = 'http://localhost:8080';
             this.imagePreview = this.usuario?.personal?.persona?.foto
             ? `${baseUrl}${this.usuario?.personal?.persona?.foto}`
@@ -67,17 +66,14 @@ export default{
         async datosPerfil(){
             this.limpiarUsuario();
             await this.consultarAllUsuarios();
-            console.log('USUARIOS:', this.usuarios);
             await this.$nextTick();
 
             if(Array.isArray(this.usuarios)){
                 const foundUser = this.usuarios.find(user =>
                 user.username === this.user.username);
-                console.log('FOUNDUSER: ', foundUser);
         
                 if (foundUser) {
                     const idUsuario = foundUser.codigo;
-                    console.log('hay dato?:', idUsuario);
                     await this.consultarUsuario(idUsuario);
                     await this.$nextTick();
 
@@ -86,7 +82,6 @@ export default{
                     this.nombre = this.usuario.personal?.persona.nombres.split(' ')[0];
                     this.apellido = this.usuario.personal?.persona.apellidos.split(' ')[0];
                     this.rol = this.usuario.personal?.cargo.nombre;
-                    console.log('Usuario ; ',this.nombre,' rol: ',this.rol);
                 } else {
                     console.error('Usuario no encontrado.');
                     alert(`Lo sentimos el servidor esta caido

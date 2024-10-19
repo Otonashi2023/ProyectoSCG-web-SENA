@@ -75,7 +75,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapMutations, mapState } from 'vuex';
   
 export default {
   data(){
@@ -96,6 +96,7 @@ export default {
 
     },
     methods:{
+      ...mapMutations(['clearSearchQuery']),
       ...mapActions('persona',['actualizarPersona','consultarPersona','subirFotoPersona']),
       ...mapActions('personal',['actualizarPersonal','consultarPersonal']),
       ...mapActions('usuario',['actualizarUsuario','consultarAllUsuarios','consultarUsuario']),
@@ -104,8 +105,10 @@ export default {
       async datosPerfil(){
         try{
           this.logear = [this.usuario.username, this.usuario.password];
+          await this.$nextTick();
           console.log('LOGEAR: ', this.logear);
-          const idPersonal = this.usuario.personal.codigo;
+          console.log('1: ',this.usuario);
+          const idPersonal = this.usuario?.personal?.codigo;
           await this.consultarPersonal(idPersonal);
           const idPersona = this.personal.persona.codigo;
           await this.consultarPersona(idPersona);
@@ -221,6 +224,7 @@ export default {
     this.datosPerfil();
   },
   mounted(){
+    this.clearSearchQuery();
     console.log('usuario perfil: ', this.usuario);
   }
 }

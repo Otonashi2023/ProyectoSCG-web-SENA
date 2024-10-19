@@ -48,7 +48,8 @@ import { mapActions, mapMutations, mapState } from "vuex";
         return this.fichas.filter(item =>
           item.numero.toString().includes(query) ||
           item.formacion.nombre.toLowerCase().includes(query)
-        );
+        )
+        .reverse();
       },
     },
     methods: {

@@ -100,7 +100,6 @@ import { mapActions } from 'vuex';
         console.error("Error al iniciar sesion:", error);
       });
     }
-      console.log('Logged in with:', this.username, this.password);
     },
     saveCredentials() {
       localStorage.setItem('username', this.username);

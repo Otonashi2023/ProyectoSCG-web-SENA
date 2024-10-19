@@ -16,15 +16,15 @@
       <div class="comp-form-group2">
         <div class="form-group">
           <label for="nombres">Nombres: </label>
-          <input type="text" name="nombres" id="input2" v-model="nombres" placeholder="haz click para ingresar los nombres" required>
+          <input type="text" name="nombres" id="input2" v-model="nombres" placeholder="ingrese los nombres" required>
         </div>
         <div class="form-group">
           <label for="apellidos">Apellidos: </label>
-          <input type="text" name="apellidos" id="input2" v-model="apellidos" placeholder="haz click para ingresar los apellidos" required>
+          <input type="text" name="apellidos" id="input2" v-model="apellidos" placeholder="ingrese los apellidos" required>
         </div>
         <div class="form-group">
           <label for="">Tipo de documento: </label>
-          <input type="text" name="documento" id="input2" @click="callMetodoN"  v-model="nombreTipoDocumento" placeholder="haz click para ingresar el tipo de documento" readonly>
+          <input type="text" name="documento" id="input2" @click="callMetodoN"  v-model="nombreTipoDocumento" placeholder="ingrese el tipo de documento" readonly>
         </div>
         <div class="form-group">
           <label for="cedula">Número de identificación: </label>

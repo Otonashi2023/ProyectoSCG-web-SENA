@@ -64,7 +64,7 @@ import { mapActions, mapMutations, mapState } from "vuex";
           item.nombre.nombre.toLowerCase().includes(query) ||
           item.tipoEjercicio.nombre.toLowerCase().includes(query) ||
           item.musculo.nombre.toLowerCase().includes(query)
-        );
+        ).reverse();
       },
     },
     
@@ -88,7 +88,6 @@ import { mapActions, mapMutations, mapState } from "vuex";
         .then((response)=>{
           this.ejercicios= response.data;
           this.actionDatos2(this.ejercicios);
-          console.log('DATOS2_', this.datos2);
           this.codigo=null;
         })
         .catch((error)=>{

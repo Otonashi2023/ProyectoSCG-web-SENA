@@ -86,7 +86,8 @@
             rutina.numero.toString().includes(query)
           );
           return planCoincide || rutinaCoincide;
-        });
+        })
+        .reverse();
       },
     },
     methods: {
@@ -101,7 +102,6 @@
           const data = response.data;
           this.limpiarDatos3();
           this.actionDatos3(data);
-          console.log('DATOS3:',this.datos3);
           if (Array.isArray(data)) {
             this.originalData = data;
             return axios.get("http://localhost:8080/api/rutinaejercicio/listar");
@@ -114,8 +114,6 @@
           if (Array.isArray(ejerciciosData)) {
             this.finalData = this.enriquecerRutinasConEjercicios(ejerciciosData);
             this.actionGroupFilter2(this.finalData);
-            console.log('Datos finales:', this.finalData);
-            console.log('GROUPFILTER: ',this.groupFilter2);
           } else {
             throw new Error('La respuesta de la API de ejercicios no es un array');
           }
@@ -126,9 +124,6 @@
     },
     groupPlansByRutinas(data) {
       const groupedData = data.reduce((acc, item) => {
-        console.log('Datos completos del Plan:', item.plan);
-        console.log('Nombre del Plan:', item.plan.tipoPlan.nombre);
-        console.log('Número del Plan:', item.plan.meses);
         const key = `${item.plan.tipoPlan.nombre}_${item.plan.meses}`;
         if (!acc[key]) {
           acc[key] = { plan: item.plan, rutinas: [] };
@@ -162,8 +157,6 @@
         const codigosToDelete = this.originalData
           .filter(item => item.plan.codigo === nombreCodigo)
           .map(item => item.codigo); // Asumiendo que el código es `plan.codigo`
-
-        console.log('plan a eliminar:', codigosToDelete);
 
         // Crear una cadena de promesas de eliminación
         let promiseChain = Promise.resolve();

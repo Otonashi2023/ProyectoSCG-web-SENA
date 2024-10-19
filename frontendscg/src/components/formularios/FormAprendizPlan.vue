@@ -1,7 +1,7 @@
 <template>
     <div class="container2" id="form">
       <h1>Asignación del plan de entrenamiento</h1>
-      <form @submit.prevent="servicio">
+      <form @submit.prevent="servicio" id="scroll2">
         <div class="comp-form-group2">
           <div class="form-group">
             <label for="aprendiz">Aprendiz: </label>

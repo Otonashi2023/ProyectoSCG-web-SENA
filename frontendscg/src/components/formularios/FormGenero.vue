@@ -1,5 +1,5 @@
 <template>
-    <div class="container" id="form">
+    <div class="containerT" id="form">
       <h1>Formulario nombre de genero</h1>
       <form id="simple-form" @submit.prevent="servicio()" >
         <div class="form-group">

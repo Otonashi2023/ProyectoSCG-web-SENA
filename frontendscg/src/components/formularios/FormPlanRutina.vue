@@ -1,7 +1,7 @@
 <template>
-  <div class="container" id="form">
+  <div class="containerF" id="form" >
     <h1>Formulario Plan de Entrenamiento</h1>
-    <form @submit.prevent="servicio()" >
+    <form @submit.prevent="servicio()" id="scroll4">
       <div class="comp-form-group">
         <div class="form-group">
           <label for="plan">Plan: {{ dato9 }} meses</label>
@@ -19,10 +19,10 @@
           </div>
         </div>
       </div>
-    </form>
-    <div class="container2" style="height: 68vh;" v-if="tabla">
+    </form><br>
+    <div class="containerF" v-if="tabla">
       <h1>Tabla  de rutinas</h1>
-      <div id="scroll2">
+      <div id="scroll2" style="max-height: 40vh;">
         <table>
           <thead>
             <tr>
@@ -205,7 +205,6 @@
 
     //para llamar en una tabla rutinas que se agregaran al plan
     async agregarRutina() {
-      console.log('CODIGO_PLAN: ', this.dato5);
       if(this.dato5!=null){
         this.tabla=true;
         if(this.rutinaInCodes.length > 0){
@@ -345,7 +344,7 @@
       },
       abrirMensaje(){
         if(this.datoact0 == 'retorno'){
-          this.mensaje = 'click en guardar para efectuar los cambios.'
+          this.mensaje = 'click en "Guardar" para ver los cambios.'
         }
       },
     },

@@ -374,14 +374,14 @@ section{
   grid-auto-rows: 0.1fr;
 }
 .comp-form-group2 .form-group #input2 {
-  width: auto;
+  width: 220px;
   outline: none;
   border: 1px solid var(--color-gris-medio);
 }
 
 #formbutton{
   margin-top: 48px;
-  margin-left: 80px;
+  margin-left: 20px;
   display: flex;
   width:250px;
   padding: 0;
@@ -436,6 +436,20 @@ ventana{
   width: auto;
   max-width: 100vw;
 }
+.containerF{
+  border-radius: 10px;
+  font-size: 90%;
+  margin: .5rem;
+  padding: auto;
+  /*box-shadow: 0 0 10px rgba(76, 92, 164, 1);*/
+  background-color: var(--color-blanco);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  max-height: auto;
+  height: 100%;
+  width: auto;
+  max-width: 100vw;
+}
 .container h1, .container2 h1{
   padding-top: 8px;
 }
@@ -478,11 +492,10 @@ tr:hover .head2 {
 }
 
 #scroll{
-  padding-bottom: 4px;
   border-radius: 8px;
   overflow-x: auto;
   overflow-y: auto;
-  height: 70vh;
+  height: 68vh;
   max-width: 100%;
   white-space: nowrap;
 }
@@ -506,8 +519,8 @@ tr:hover .head2 {
   border-radius: 8px;
   overflow-x: auto;
   overflow-y: auto;
-  width: auto;
-  height: 84%;
+  min-width: auto;
+  height: auto;
   white-space: nowrap;
 }
 #fila2{

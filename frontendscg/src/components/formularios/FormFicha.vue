@@ -1,15 +1,15 @@
 <template>
-    <div class="container" id="form">
+    <div class="container2" id="form">
       <h1>Formulario de Ficha</h1>
-      <form @submit.prevent="servicio()" >
+      <form @submit.prevent="servicio()" id="scroll">
         <div class="comp-form-group">
             <div class="form-group">
             <label for="ficha">Numero: </label>
-            <input type="number" name="ficha" id="input2" ref="myInput" v-model="numero" placeholder="haz click para ingresar el numero de ficha" required> 
+            <input type="number" name="ficha" id="input2" ref="myInput" v-model="numero" placeholder="ingrese el numero de ficha" required> 
           </div>
           <div class="form-group">
             <label for="nombre">Formación: </label>
-            <input type="text" @click="callMetodoN"  name="nombre" id="input2" style="width: 120%" v-model="miFormacion" placeholder="haz click para ingresar la formacion" readonly>
+            <input type="text" @click="callMetodoN"  name="nombre" id="input2" v-model="miFormacion" placeholder="ingrese la formacion" readonly>
           </div>
           <div class="form-group">
             <div id="formbutton">

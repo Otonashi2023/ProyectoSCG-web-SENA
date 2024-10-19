@@ -272,7 +272,6 @@ export default{
             commit('clearDatos');
         },
         actionDatos2({commit},datos2){
-            console.log('DATOS2 EN ACTION star', datos2);
             commit('updateDatos2',datos2);
         },
         limpiarDatos2({commit}){

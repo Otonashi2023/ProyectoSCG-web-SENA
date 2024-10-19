@@ -46,7 +46,8 @@ import { mapActions, mapMutations, mapState } from "vuex";
         return this.planes.filter(plan =>
           plan.tipoPlan.nombre.toLowerCase().includes(query) ||
           plan.meses.toString().includes(query)
-        );
+        )
+        .reverse();
       },
 
     },

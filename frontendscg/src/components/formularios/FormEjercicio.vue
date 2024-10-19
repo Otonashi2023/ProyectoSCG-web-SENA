@@ -1,7 +1,7 @@
 <template>
     <div class="container2" id="form">
       <h1>Formulario de ejercicio</h1>
-      <form @submit.prevent="servicio()" >
+      <form @submit.prevent="servicio()" id="scroll">
         <div style="display: grid; grid-template-columns: auto; justify-content: center;">
         <input style="display: none;" type="file" accept="image/*" @change="onFileChange" ref="fileInput"/>
       </div>

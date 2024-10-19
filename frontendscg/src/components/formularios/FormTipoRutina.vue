@@ -1,5 +1,5 @@
 <template>
-    <div class="container" id="form">
+    <div class="containerT" id="form">
       <h1>Formulario tipo de rutina</h1>
       <form id="simple-form" @submit.prevent="comparar()" >
         <div class="form-group">

@@ -70,7 +70,8 @@ export default {
           item.persona.cedula.toString().includes(query) ||
           item.ficha.numero.toString().includes(query) ||
           item.ficha.formacion.nombre.toLowerCase().includes(query)
-        );
+        )
+        .reverse();
       },
   },
 
@@ -102,7 +103,6 @@ export default {
     async consultarItem1(value){
       await this.consultarAprendiz(value);
       await this.$nextTick();
-      console.log('aprendiz: ', this.aprendiz.codigo);
       this.$router.push('fichaAntropometrica');
     },
     async consultarItem2(value){
@@ -134,7 +134,6 @@ export default {
     this.formulario();
     await this.consultarAllAprendices();
     await this.$nextTick();
-    console.log('aprendices: ', this.aprendices);
   },
 }
 </script>

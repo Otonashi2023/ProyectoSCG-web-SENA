@@ -1,6 +1,6 @@
 <template>
     <!--Tabla que lista todos los registros de la entidad-->
-    <div class="containerT" id="scroll">
+    <div class="containerT" id="scroll2">
       <h1>Tabla de tipos de ejercicio</h1>
       <table>
         <thead>
@@ -38,7 +38,8 @@ import { mapActions, mapMutations, mapState } from "vuex";
         const query = this.searchQuery;
         return this.nombres.filter(item =>
           item.nombre.toLowerCase().includes(query)
-        );
+        )
+        .reverse();
       },
     },
     methods: {

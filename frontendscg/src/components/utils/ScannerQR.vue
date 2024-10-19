@@ -187,7 +187,8 @@ import { mapActions, mapState } from 'vuex';
     filter: none;
     transform: none;
   }
-  .json-display {
+
+.json-display {
   margin-top: 20px;
 }
 

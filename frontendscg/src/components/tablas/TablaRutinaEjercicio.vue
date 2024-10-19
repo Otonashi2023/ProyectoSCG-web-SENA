@@ -76,7 +76,8 @@ export default {
             ejercicio.musculo.nombre.toLowerCase().includes(query)
           );
           return planCoincide || rutinaCoincide;
-        });
+        })
+        .reverse();
       },
   },
 
@@ -91,14 +92,11 @@ export default {
       .then((response)=>{
         const data = response.data;
         this.actionDatos(data);
-        console.log('Datos de la API:', data);
 
         if (Array.isArray(data)) {
           this.originalData = data; // Guardar los datos originales
           this.finalData = this.groupDataByName(data);
           this.actionGroupFilter(this.finalData);
-          console.log('FINALDATA :', this.finalData);
-          console.log('GROUPFILTER: ',this.groupFilter);
         } else {
           console.error('La respuesta de la API no es un array:', data);
         }
@@ -117,7 +115,6 @@ export default {
         acc[key].ejercicios.push(item.ejercicio);
         return acc;
       }, {});
-      console.log('GROUPEDDATA: ',groupedData);
       return Object.values(groupedData);
     },
 

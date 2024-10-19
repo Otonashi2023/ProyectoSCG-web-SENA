@@ -61,7 +61,8 @@ import { mapActions, mapMutations, mapState } from "vuex";
         const query = this.searchQuery;
         return this.listaFiltrada.filter(item =>
           item.fecha.includes(query)
-        );
+        )
+        .reverse();
       }
     },
     methods: {
@@ -87,9 +88,7 @@ import { mapActions, mapMutations, mapState } from "vuex";
         await this.$nextTick();
         this.listaFiltrada = this.fichaAntropoAll
           .filter(item => item.aprendiz.codigo === this.aprendiz.codigo);
-        console.log('fichaAll: ', this.fichaAntropoAll);
         this.setFichaAntropoAll(this.listaFiltrada);
-        console.log('Filtrado_: ', this.listaFiltrada);
       },
       consultarbyId(value){
         this.$emit('ById', value, this.listaFiltrada);

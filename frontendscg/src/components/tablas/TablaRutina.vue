@@ -46,7 +46,8 @@ import { mapActions, mapMutations, mapState } from "vuex";
         return this.rutinas.filter(item =>
           item.tipoRutina.nombre.toLowerCase().includes(query) ||
           item.numero.toString().includes(query)
-        );
+        )
+        .reverse();
       },
     },
     methods: {

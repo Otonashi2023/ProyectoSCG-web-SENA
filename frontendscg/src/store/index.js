@@ -19,6 +19,8 @@ import ensayo from './modules/ensayo';
 import utils from './modules/utils';
 import ejercicio from './modules/ejercicio';
 import plan from './modules/plan';
+import planRutina from './modules/planRutina';
+import rutinaEjercicio from './modules/rutinaEjercicio';
 //import axios from 'axios';
 
 export default createStore({
@@ -531,5 +533,7 @@ export default createStore({
     utils,//no hay api
     ejercicio,
     plan,// sin usar
+    planRutina,
+    rutinaEjercicio,
   }
 });

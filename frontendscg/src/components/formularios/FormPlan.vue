@@ -1,7 +1,7 @@
 <template>
     <div class="container" id="form">
       <h1>Formulario de Plan</h1>
-      <form @submit.prevent="save()" >
+      <form @submit.prevent="save()" id="scroll" >
         <div class="comp-form-group">
           <div class="form-group">
             <label for="nombre">Nombre: </label>

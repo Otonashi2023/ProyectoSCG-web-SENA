@@ -75,7 +75,8 @@ export default{
           item.finaliza.toLowerCase().includes(query) ||
           item.plan.tipoPlan.nombre.toLowerCase().includes(query) /*||
           item.plan.meses.toString().includes(query)*/
-        );
+        )
+        .reverse();
       },
     },
     methods:{
@@ -88,8 +89,6 @@ export default{
         await this.$nextTick();
         this.filtradoApPlan = this.aprendizPlanAll
           .filter(item => item.aprendiz.codigo === this.aprendiz.codigo);
-        console.log('filtradizApPlan: ',this.filtradoApPlan);
-        console.log('aprendizPlanAll: ',this.aprendizPlanAll);
       },
       async eliminar(value){
         await this.eliminarAprendizPlan(value);

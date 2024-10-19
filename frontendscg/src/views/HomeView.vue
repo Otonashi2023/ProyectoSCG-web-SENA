@@ -4,23 +4,22 @@
   </div>
   <div class="container2">
     <div id="scroll">
-      <div style="width:95%;display: grid; grid-template-columns: auto auto;">
-        
+      <div style="display: grid; grid-template-columns: auto auto">
         <div style="width: auto">
-          <h2>Gráfico de Torta (Pastel)</h2>
-        <apexchart type="pie" height="350px" :options="pieOptions" :series="pieSeries"></apexchart>
+          <h2>Los planes mas demandados</h2>
+        <apexchart type="pie" height="80%" :options="pieOptions" :series="pieSeries"></apexchart>
         </div>
         <div style="width: auto">
-          <h2>Gráfico de Líneas Rectas y Senoidal</h2>
-        <apexchart type="line" height="350px" :options="lineOptions" :series="lineSeries"></apexchart>
+          <h2>Rutinas y ejercicios mas usados </h2>
+        <apexchart type="bar" height="80%" :options="barOptions2" :series="barSeries2"></apexchart>
         </div>
-        <div>
-        <h2>Gráfico de Líneas con Sombras</h2>
-        <apexchart type="line" height="350px" :options="chartOptions" :series="seriesData"></apexchart>
-      </div>
-      <div style="width: auto">
-          <h2>Gráfico de Barras</h2>
-        <apexchart type="bar" height="350px" :options="barOptions" :series="barSeries"></apexchart>
+        <div style="width: auto">
+          <h2>Aprendices activos por plan </h2>
+        <apexchart type="bar" height="80%" :options="barOptions" :series="barSeries"></apexchart>
+        </div>
+        <div style="width: auto">
+          <h2>Aprendices Nuevos y Recurrentes</h2>
+        <apexchart type="pie" height="60%" :options="pieOptions2" :series="pieSeries2"></apexchart>
         </div>
       </div>
     </div>
@@ -29,6 +28,7 @@
 
 <script>
 import ApexCharts from "vue3-apexcharts";
+import { mapActions, mapMutations, mapState } from "vuex";
 
 export default {
   components: {
@@ -37,13 +37,13 @@ export default {
   data() {
     return {
       // Datos del gráfico de torta
-      pieSeries: [44, 55, 13, 43, 22],
+      pieSeries: [],
       pieOptions: {
         chart: {
           type: 'pie',
           events: {}
         },
-        labels: ['Rojo', 'Azul', 'Amarillo'],
+        labels: [],
         responsive: [{
           breakpoint: 480,
           options: {
@@ -54,18 +54,22 @@ export default {
               position: 'bottom'
             }
           }
-        }]
+        }],
+        fill: {
+          opacity: 0.9
+        },
       },
 
       // Datos del gráfico de barras
       barSeries: [{
-        name: 'Ventas',
-        data: [44, 55, 41, 64, 22, 43]
-      }],
+        name: 'Aprendices',
+        data: []
+      },  
+    ],
       barOptions: {
         chart: {
           type: 'bar',
-          height: 350
+          height: 350,
         },
         plotOptions: {
           bar: {
@@ -77,109 +81,257 @@ export default {
           enabled: false
         },
         xaxis: {
-          categories: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'],
+          categories: [],
+          labels: {
+            rotate: -50, // Rotar las etiquetas 45 grados hacia la izquierda
+            style: {
+              fontSize: '10px',  // Tamaño de fuente reducido
+              whiteSpace: 'normal'  // Permitir el texto en múltiples líneas
+            },
+          },
         },
         yaxis: {
           title: {
-            text: 'Ventas'
-          }
+            text: 'Cantidad de estudiantes'
+          },
         },
         fill: {
-          opacity: 1
+          opacity: 0.9
         },
       },
 
-      // Datos del gráfico de líneas rectas y senoidales
-      lineSeries: [
-        {
-          name: 'Línea Recta',
-          data: [10, 20, 30, 40, 50, 60]
-        },
-        {
-          name: 'Senoidal',
-          data: [Math.sin(0), Math.sin(1), Math.sin(2), Math.sin(3), Math.sin(4), Math.sin(5)]
-        }
-      ],
-      lineOptions: {
-        chart: {
-          height: 350,
-          type: 'line',
-        },
-        stroke: {
-          curve: 'smooth'
-        },
-        xaxis: {
-          categories: ['0', '1', '2', '3', '4', '5'],
-        },
-        yaxis: {
-          title: {
-            text: 'Valor'
-          }
-        },
+      // Datos del gráfico de barras2
+      barSeries2: [{
+        name: 'Rutinas',
+        data: []
       },
-
-      //graficos con sombra
-      seriesData: [
-        {
-          name: "Ventas",
-          data: [31, 40, 28, 51, 42, 109, 100],
-        },
-      ],
-      chartOptions: {
+      {
+        name: 'Ejercicios',
+        data: []
+      }],
+      barOptions2: {
         chart: {
-          type: "line",
+          type: 'bar',
           height: 350,
-        },
-        stroke: {
-          width: 3, // Ancho de las líneas
-          curve: "smooth", // Puedes elegir "smooth" para líneas curvas
-        },
-        fill: {
-          type: "gradient", // Esto agrega un gradiente a la sombra
-          gradient: {
-            shade: "dark", // Cambia el tipo de sombra (puede ser 'light' o 'dark')
-            shadeIntensity: 0.5, // Intensidad de la sombra
-            opacityFrom: 0.7, // Opacidad desde
-            opacityTo: 0.9, // Opacidad hasta
-          },
-        },
-        markers: {
-          size: 4, // Tamaño de los puntos en el gráfico
-          colors: ["#FFA41B"], // Color de los puntos
-          strokeColors: "#fff", // Color del borde del punto
-          strokeWidth: 2, // Ancho del borde del punto
-          hover: {
-            size: 7, // Tamaño del marcador cuando se pasa el mouse
-          },
-        },
-        xaxis: {
-          categories: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio"],
-        },
-        //para la sombra
-        dataLabels: {
-          enabled: false,
         },
         plotOptions: {
           bar: {
             horizontal: false,
+            columnWidth: '55%',
           },
         },
-        shadow: {
-          enabled: true, // Habilitar sombras
-          color: '#ffddff', // Color de la sombra
-          top: 10, // Desplazamiento vertical
-          left: 10, // Desplazamiento horizontal
-          blur: 10, // Desenfoque de la sombra
-          opacity: 0.3, // Opacidad de la sombra
+        dataLabels: {
+          enabled: false
+        },
+        xaxis: {
+          categories: [1, 2, 3, 4], // Categorías numéricas
+          labels: {
+            rotate: -50,
+            style: {
+              fontSize: '10px',
+              whiteSpace: 'normal'
+            },
+          },
+        },
+        yaxis: {
+          title: {
+            text: 'Cantidad de veces'
+          },
+        },
+        tooltip: {
+          y: {
+            formatter: (val, { seriesIndex, dataPointIndex }) => {
+              const name = seriesIndex === 0 ? this.rutinaNames[dataPointIndex] : this.exerciseNames[dataPointIndex];
+              return `${name}: ${val}`; // Mostrar el nombre y la cantidad en el tooltip
+            },
+          },
+        },
+        fill: {
+          opacity: 0.9
+        },
+      },
+
+      // Datos del gráfico de torta2
+      pieSeries2: [],
+      pieOptions2: {
+        chart: {
+          type: 'pie',
+          events: {}
+        },
+        labels: ['Nuevos', 'Recurrentes'],
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }],
+        dataLabels: {
+          enabled: true,
+          formatter: function (val, opts) {
+            const value = opts.w.config.series[opts.seriesIndex];
+            const total = opts.w.globals.seriesTotals.reduce((a, b) => a + b, 0); // Suma total de la serie
+            const percentage = ((value / total) * 100).toFixed(2); // Calcular porcentaje
+            return `${percentage}% (${value})`; // Mostrar valor y porcentaje
+          },
+          style: {
+            fontSize: '16px',
+            fontFamily: 'Helvetica, Arial, sans-serif',
+            fontWeight: 'bold',
+          },
+        },
+        
+        fill: {
+          opacity: 0.9
         },
       },
     };
   },
+  computed:{
+    ...mapState('aprendizPlan',['aprendizPlanAll']),
+    ...mapState('planRutina',['planRutinaAll']),
+    ...mapState('rutinaEjercicio',['rutinaEjercicioAll']),
+  },
+  methods:{
+    ...mapMutations(['clearSearchQuery']),
+    ...mapActions('aprendizPlan',['consultarAprendizPlanAll']),
+    ...mapActions('planRutina',['consultarPlanRutinaAll']),
+    ...mapActions('rutinaEjercicio',['consultarRutinaEjercicioAll']),
+
+    planesMasUsados(){
+      if (this.aprendizPlanAll.length > 0 ) {
+        const filtroPlanes = this.aprendizPlanAll.reduce((acc, item) => {
+          acc[item.plan.tipoPlan.nombre] = (acc[item.plan.tipoPlan.nombre] || 0) + 1;
+          return acc;
+        }, {});
+        
+        const sortedPlanes = Object.entries(filtroPlanes)
+          .sort((a, b) => b[1] - a[1]);
+
+        const top4Planes = sortedPlanes.slice(0, 4);
+        const otherPlanes = sortedPlanes.slice(4);
+
+        const otherSum = otherPlanes.reduce((acc, item) => acc + item[1], 0);
+
+        this.pieSeries = [...top4Planes.map(item => item[1]), otherSum];
+        this.pieOptions = {
+          ...this.pieOptions,
+          labels: [...top4Planes.map(item => item[0]), 'Otros'],
+        };
+      }
+    },
+
+  distribicionAprendizPlan(){
+    const hoy = new Date().toISOString().split('T')[0];
+    const planNoFinalizado = this.aprendizPlanAll.filter(item => item.finaliza > hoy);    
+    const planesAgrupados = planNoFinalizado.reduce((acc, plan) => {
+      const planNombre = plan.plan.tipoPlan.nombre; // Nombre del plan
+      if (!acc[planNombre]) {
+        acc[planNombre] = 0; // Inicializa el contador si no existe
+      }
+      acc[planNombre] += 1; // Incrementa el contador por cada estudiante en el plan
+      return acc;
+    }, {});
+
+    const planesArray = Object.entries(planesAgrupados);
+
+    this.barSeries = [{
+      name: 'Aprendices',
+      data: planesArray.map(item => item[1])//Cantidad de estudiantes por plan
+    }];
+
+    this.barOptions = {
+      ...this.barOptions,
+      xaxis:{
+        categories: planesArray.map(item => item[0]), //Nombre de todo los planes activos
+      }
+    }
+  },
+
+  rutinasMasUsadas() {
+      if (this.planRutinaAll.length > 0) {
+        const filtroRutinas = this.planRutinaAll.reduce((acc, item) => {
+          acc[item.rutina.tipoRutina.nombre] = (acc[item.rutina.tipoRutina.nombre] || 0) + 1;
+          return acc;
+        }, {});
+        const sortedRutinas = Object.entries(filtroRutinas)
+          .sort((a, b) => b[1] - a[1]);
+
+        const top4Rutinas = sortedRutinas.slice(0, 4);
+        this.rutinaNames = top4Rutinas.map(item => item[0]); // Almacena los nombres de las rutinas
+        this.barSeries2[0].data = top4Rutinas.map(item => item[1]); // Cantidad de rutinas usadas
+      }
+    },
+    ejerciciosMasUsados() {
+      if (this.rutinaEjercicioAll.length > 0) {
+        const filtroEjercicio = this.rutinaEjercicioAll.reduce((acc, item) => {
+          acc[item.ejercicio.nombre.nombre] = (acc[item.ejercicio.nombre.nombre] || 0) + 1;
+          return acc;
+        }, {});
+        const sortedEjercicios = Object.entries(filtroEjercicio)
+          .sort((a, b) => b[1] - a[1]);
+
+        const top4Ejercicios = sortedEjercicios.slice(0, 4);
+        this.exerciseNames = top4Ejercicios.map(item => item[0]); // Almacena los nombres de los ejercicios
+        this.barSeries2[1].data = top4Ejercicios.map(item => item[1]); // Cantidad de ejercicios usados
+      }
+    },
+    rutinaEjercicios(){
+      this.rutinasMasUsadas();
+      this.ejerciciosMasUsados();
+    },
+
+    aprendicesActivos(){
+      const hoy = new Date().toISOString().split('T')[0];
+      const aprendicesActivos = this.aprendizPlanAll.filter(item => item.finaliza > hoy);
+
+      const nuevos = [];
+      const recurrentes = [];
+
+      aprendicesActivos.forEach(aprendizActivo => {
+        const planesAsociados = this.aprendizPlanAll.filter(plan => plan.aprendiz.codigo === aprendizActivo.aprendiz.codigo);
+        
+        if(planesAsociados.length >2){
+          recurrentes.push({
+            aprendiz: aprendizActivo.aprendiz,
+            planes: planesAsociados,
+          });
+        } else{
+          nuevos.push({
+            aprendiz: aprendizActivo.aprendiz,
+            planes: planesAsociados,
+          });
+        } 
+      });
+
+      const cantidadNuevos = nuevos.length;
+      const cantidadRecurrentes = recurrentes.length;
+
+      this.pieSeries2 = [cantidadNuevos, cantidadRecurrentes];
+      this.pieOptions2 = {
+        ...this.pieOptions2,
+        labels: ['Nuevos', 'Recurrentes'],
+      };
+    }
+  },
+
+  async mounted(){
+    this.clearSearchQuery();
+    await Promise.all([
+      this.consultarAprendizPlanAll(),
+      this.consultarPlanRutinaAll(),
+      this.consultarRutinaEjercicioAll(),
+    ]);
+    await this.$nextTick();
+
+    this.planesMasUsados();
+    this.distribicionAprendizPlan();
+    this.rutinaEjercicios();
+    this.aprendicesActivos();
+  }
 };
 </script>
-
-<style scoped>
-h2 {
-  margin-top: 40px;
-}
-</style>

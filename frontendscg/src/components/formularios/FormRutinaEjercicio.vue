@@ -1,7 +1,7 @@
 <template>
-  <div class="container" id="form">
+  <div class="containerF" id="form">
     <h1>Formulario de Rutina de Entrenamiento</h1>
-    <form @submit.prevent="servicio()">
+    <form @submit.prevent="servicio()" id="scroll4">
       <div class="comp-form-group">
         <div class="form-group">
           <label for="rutina">Rutina: version
@@ -22,9 +22,9 @@
         </div>
       </div>
     </form>
-    <div class="container2" style="height: 68vh;" v-if="tabla">
+    <div class="containerF" v-if="tabla">
       <h1>Tabla  de ejercicios</h1>
-      <div id="scroll2">
+      <div id="scroll2" style="max-height: 40vh;">
         <table>
         <thead>
           <tr>
