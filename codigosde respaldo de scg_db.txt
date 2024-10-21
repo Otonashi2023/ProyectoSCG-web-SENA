@@ -1,0 +1,13 @@
+en los corchetes de "usuario" remplazarlo por el nombre root y sin los corchetes(nombre por defecto)
+en los corchetes de "nombre de la base de datos" remplazarlo por el nombre que tiene la base de datos sin los corchetes
+
+desde el cmd ingresar:
+
+para crear un respaldo
+mysqldump -u [usuario] -p [nombre de la base de datos] > respaldo.sql
+
+para restaurar respaldo
+mysql -u root -p scg_db < respaldo.sql
+
+para cambiar la ruta de respaldo
+mysqldump -u root -p scg_db > C:\ruta\hacia\tu\carpeta\respaldo.sql

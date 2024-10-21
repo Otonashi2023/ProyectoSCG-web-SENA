@@ -83,10 +83,10 @@ export default {
         xaxis: {
           categories: [],
           labels: {
-            rotate: -50, // Rotar las etiquetas 45 grados hacia la izquierda
+            rotate: -50,
             style: {
-              fontSize: '10px',  // Tamaño de fuente reducido
-              whiteSpace: 'normal'  // Permitir el texto en múltiples líneas
+              fontSize: '10px',
+              whiteSpace: 'normal'
             },
           },
         },
@@ -124,7 +124,7 @@ export default {
           enabled: false
         },
         xaxis: {
-          categories: [1, 2, 3, 4], // Categorías numéricas
+          categories: [1, 2, 3, 4],
           labels: {
             rotate: -50,
             style: {
@@ -142,7 +142,7 @@ export default {
           y: {
             formatter: (val, { seriesIndex, dataPointIndex }) => {
               const name = seriesIndex === 0 ? this.rutinaNames[dataPointIndex] : this.exerciseNames[dataPointIndex];
-              return `${name}: ${val}`; // Mostrar el nombre y la cantidad en el tooltip
+              return `${name}: ${val}`;
             },
           },
         },
@@ -174,9 +174,9 @@ export default {
           enabled: true,
           formatter: function (val, opts) {
             const value = opts.w.config.series[opts.seriesIndex];
-            const total = opts.w.globals.seriesTotals.reduce((a, b) => a + b, 0); // Suma total de la serie
-            const percentage = ((value / total) * 100).toFixed(2); // Calcular porcentaje
-            return `${percentage}% (${value})`; // Mostrar valor y porcentaje
+            const total = opts.w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+            const percentage = ((value / total) * 100).toFixed(2);
+            return `${percentage}% (${value})`;
           },
           style: {
             fontSize: '16px',

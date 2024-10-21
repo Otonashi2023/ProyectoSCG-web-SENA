@@ -47,7 +47,7 @@ export default{
 
       filtrados() {
         const query = this.searchQuery.toLowerCase();
-        return this.aprendices.filter(item => {
+        const aprendicesFiltrados = this.aprendices.filter(item => {
           const nombre = item.persona.nombres.toLowerCase();
           const apellido = item.persona.apellidos.toLowerCase();
           const cedula = item.persona.cedula.toString();
@@ -63,8 +63,25 @@ export default{
                 (ultimaAsistenciaHora && ultimaAsistenciaHora.includes(query)) ||
                 (planActual.tipoNombre && planActual.tipoNombre.toLowerCase().includes(query)) ||
                 (estadoPlan.estado && estadoPlan.estado.toLowerCase().includes(query));
+        }).reverse();
+
+        const enProceso = [];
+        const terminado = [];
+        const sinPlan = [];
+        
+        aprendicesFiltrados.forEach(item => {
+          const estado = this.estadoPlan(item.codigo).estado;
+          
+          if (estado === 'En progreso') {
+            enProceso.push(item);
+          } else if (estado === 'Terminado') {
+            terminado.push(item);
+          } else {
+            sinPlan.push(item);
+          }
         });
-        //.reverse();
+
+       return [...enProceso, ...terminado, ...sinPlan];
       }
     },
     methods:{
@@ -150,7 +167,7 @@ export default{
           estadoStyle.estado = 'Sin plan';
           estadoStyle.style = {
             color: 'gray',
-            fontWeight: '400'
+            fontWeight: '700'
           }
         }
         return estadoStyle;

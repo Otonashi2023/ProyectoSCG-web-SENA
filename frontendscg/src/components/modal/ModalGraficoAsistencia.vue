@@ -28,9 +28,11 @@ import { mapActions, mapState } from "vuex";
     },
     data() {
       return {
+        etiquetasSemanas: [],
+        nombreMes1: [],
         cargando: true,
         tabla: false,
-        intervalo: "semanas", // Inicialmente mostrar semanas
+        intervalo: "semanas",
         seriesSemanas: [
           {
             name: "Asistencia Real",
@@ -44,14 +46,34 @@ import { mapActions, mapState } from "vuex";
         seriesMeses: [
           {
             name: "Asistencia Real",
-            data: [], // Asistencia acumulada por meses (ajusta según datos reales)
+            data: [],
           },
           {
             name: "Asistencia Perfecta",
-            data: [], // Línea de referencia perfecta para 6 meses
+            data: [],
           },
         ],
-        chartOptions: {
+      };
+    },
+    computed: {
+      ...mapState('aprendiz',['aprendiz']),
+      ...mapState('asistencia',['asistencias']),
+      ...mapState('aprendizPlan',['aprendizPlanAll']),
+      ...mapState('planRutina',['planRutinaAll']),
+
+      series() {
+        return this.intervalo === "semanas" ? this.seriesSemanas : this.seriesMeses;
+      },
+      textoProgresoPlan() {
+        const plan = this.planesFiltrados();
+        if (plan && plan.plan && plan.plan.tipoPlan) {
+          return `Progreso del Plan de Entrenamiento - ${plan.plan.tipoPlan.nombre}`;
+        } else {
+          return 'Progreso del Plan de Entrenamiento';
+        }
+      },
+      chartOptions() {
+        return {
           chart: {
             type: "line",
             height: 350,
@@ -65,11 +87,11 @@ import { mapActions, mapState } from "vuex";
             dashArray: [0, 5],
           },
           title: {
-            text: "Progreso de Asistencia del Aprendiz",
+            text: this.textoProgresoPlan,
             align: "center",
           },
           xaxis: {
-            categories: [],
+            categories: this.intervalo === 'semanas' ? this.etiquetasSemanas : this.nombreMes1 
           },
           yaxis: {
             title: {
@@ -87,18 +109,7 @@ import { mapActions, mapState } from "vuex";
               show: true,
             },
           },
-        },
-      };
-    },
-    computed: {
-      ...mapState('aprendiz',['aprendiz']),
-      ...mapState('asistencia',['asistencias']),
-      ...mapState('aprendizPlan',['aprendizPlanAll']),
-      ...mapState('planRutina',['planRutinaAll']),
-
-      series() {
-        // Cambia las series de datos según el intervalo seleccionado
-        return this.intervalo === "semanas" ? this.seriesSemanas : this.seriesMeses;
+        };
       },
     },
     methods: {
@@ -167,7 +178,7 @@ import { mapActions, mapState } from "vuex";
             categories: this.nombreMes1
           }
         };
-
+        console.log(diasTotales);
         return diasTotales;
       },
 
@@ -271,7 +282,7 @@ import { mapActions, mapState } from "vuex";
             console.error("Fecha inválida: ", asistencia.fecha);
             return null;
           }
-        }).filter(fecha => fecha !== null); // Filtra cualquier entrada nula en caso de errores de fecha
+        }).filter(fecha => fecha !== null);
 
         const arrayX = fechasFiltradas.map(fecha => ({
           fecha,
@@ -348,6 +359,7 @@ import { mapActions, mapState } from "vuex";
         } else{
           this.max = planFiltrado.plan.meses;
         }
+        console.log(asistenciasPorMesArray);
 
         for (let i = 0; i < this.max; i++) { 
           if(i< this.max) {   
@@ -356,41 +368,82 @@ import { mapActions, mapState } from "vuex";
         }
       }      
 
-    const sesionesPorMes = 4;
-    const asistenciaPerfectaArray = new Array(planFiltrado.plan.meses).fill(sesionesPorMes);
-    for (let i = 0; i < this.max; i++) {
-        asistenciaPerfectaArray[i] = (i + 1) * sesionesPorMes; // Sesiones acumuladas por mes
-    }
+    const sesionesPorMes = this.calcularSesionesPorMes();
 
-    this.seriesMeses[0].data = asistenciasPorMesArray;
-    this.seriesMeses[1].data = asistenciaPerfectaArray;
-    },
+      let asistenciaPerfectaArray = new Array(planFiltrado.plan.meses).fill(null);
 
-      cambiarIntervalo(tipo) {
-        this.intervalo = tipo;
-        // Cambia las etiquetas del eje X
-        this.chartOptions.xaxis.categories =
-          tipo === "semanas"
-            ? this.arraysXY().etiquetasSemanas
-            : this.nombreMes1;
+      let acumuladoSesiones = 0;
+      for (let i = 0; i < planFiltrado.plan.meses; i++) {
+          if (sesionesPorMes[i] !== null) {
+              acumuladoSesiones += sesionesPorMes[i];
+              asistenciaPerfectaArray[i] = acumuladoSesiones;
+          } else {
+              asistenciaPerfectaArray[i] = null;
+          }
+      }
 
-        this.$nextTick(() => {
-          this.chartOptions = { ...this.chartOptions };
-        });
+      this.seriesMeses[0].data = asistenciasPorMesArray;
+      this.seriesMeses[1].data = asistenciaPerfectaArray;
       },
+
+      calcularSesionesPorMes() {
+        const planFiltrado = this.planesFiltrados();
+
+        const anioInicio = parseInt(planFiltrado.inicio.split('-')[0]);
+        const anioFinal = parseInt(planFiltrado.finaliza.split('-')[0]);
+        const mesInicio = parseInt(planFiltrado.inicio.split('-')[1]);
+        const mesFinal = parseInt(planFiltrado.finaliza.split('-')[1])-1; 
+        console.log(anioInicio);
+        console.log(anioFinal);
+        console.log(mesInicio);
+        console.log(mesFinal);
+
+        const sesionesPorMes = [];
+
+        for (let anio = anioInicio; anio <= anioFinal; anio++) {
+            const mesInicioActual = (anio === anioInicio) ? mesInicio : 0;
+            const mesFinalActual = (anio === anioFinal) ? mesFinal : 11;
+
+            for (let mes = mesInicioActual; mes <= mesFinalActual; mes++) {
+                if (mes === 2) {
+                    sesionesPorMes.push(16);
+                } else {
+                    sesionesPorMes.push(17);
+                }
+            }
+        }
+
+        console.log(sesionesPorMes);
+        return sesionesPorMes;
+      },
+
+      cambiarIntervalo(intervalo) {
+        this.intervalo = intervalo;
+        this.generarEtiquetas();
+      },
+
+      generarEtiquetas() {
+        if (this.intervalo === 'semanas') {
+          this.etiquetasSemanas = this.arraysXY().etiquetasSemanas;
+        } else {
+          this.etiquetasMeses = this.nombreMes1;
+        }
+      },
+    
       cerrarModal(){
         this.$emit('showModal', false);
       },
       
     },
     mounted(){
-      this.cambiarIntervalo(this.intervalo = 'semanas');
       this.consultarAll().then(() => {
         this.planesFiltrados();
         this.rutinasXsemana();
         this.arraysXY();
         this.asistenciasFiltradas();
         this.asistenciasPorMes();
+        this.cambiarIntervalo("semanas");
+        this.calcularSesionesPorMes();
       });
     }
   };
