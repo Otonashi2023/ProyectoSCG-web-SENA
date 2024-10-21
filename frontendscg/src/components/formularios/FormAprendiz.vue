@@ -56,7 +56,7 @@
         </div>
         <div class="form-group">
           <label for="restricMedicas">Restricciones Medicas:</label>
-          <input type="text" name="restricMedicas" id="input2"  v-model="restricMedicas" placeholder="ingrese las restricciones médicas" required>
+          <textarea type="text" name="restricMedicas" id="input2"  v-model="restricMedicas" placeholder="ingrese las restricciones médicas" required></textarea>
         </div>
       </div>
 

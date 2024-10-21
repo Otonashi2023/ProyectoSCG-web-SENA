@@ -334,6 +334,7 @@ import { mapActions, mapState } from "vuex";
         const planFiltrado = this.planesFiltrados();
 
         const fechaInicioPlan = new Date(planFiltrado.inicio);
+        console.log('FECHA DE INICIO: ', fechaInicioPlan);
         const fechaFinalPlan = new Date(planFiltrado.finaliza);
 
         let asistenciasPorMesArray = new Array(planFiltrado.plan.meses).fill(null);

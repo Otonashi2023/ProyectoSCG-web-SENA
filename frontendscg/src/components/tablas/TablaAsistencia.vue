@@ -67,6 +67,7 @@ export default{
 
         const enProceso = [];
         const terminado = [];
+        const cancelado = [];
         const sinPlan = [];
         
         aprendicesFiltrados.forEach(item => {
@@ -76,12 +77,14 @@ export default{
             enProceso.push(item);
           } else if (estado === 'Terminado') {
             terminado.push(item);
+          } else if (estado === 'Cancelado') {
+            cancelado.push(item);
           } else {
             sinPlan.push(item);
           }
         });
 
-       return [...enProceso, ...terminado, ...sinPlan];
+       return [...enProceso, ...terminado, ...cancelado, ...sinPlan];
       }
     },
     methods:{
@@ -148,8 +151,19 @@ export default{
 
         const inicio = new Date(planEnCurso.inicio);
         const finaliza = new Date(planEnCurso.finaliza);
-
-        if (inicio < new Date() && finaliza > new Date()) {
+        const mesesAsumar = planEnCurso.plan.meses;
+        const nuevaFecha = new Date(inicio);
+        nuevaFecha.setMonth(nuevaFecha.getMonth() + mesesAsumar);
+        console.log('Nueva fecha:', nuevaFecha);
+        
+        if(nuevaFecha > finaliza){
+          estadoStyle.estado = 'Cancelado';
+          estadoStyle.style = {
+            color: 'red',
+            fontWeight: '700'
+          }
+        }
+         else if(inicio < new Date() && finaliza > new Date()) {
           estadoStyle.estado = 'En progreso';
           estadoStyle.style = {
             color: 'blue',
@@ -179,10 +193,11 @@ export default{
       abrirModal(value){
         this.consultarAprendiz(value);
         const validar = this.aprendizPlanAll.some(item => item.aprendiz.codigo === value);
-        if(validar){
+        const validar2 = this.estadoPlan(value).estado;
+        if(validar && validar2 != 'Cancelado'){
           this.$emit('showModal', true);
         } else{
-          alert('El aprendiz no tiene asignado un plan');
+          alert('El aprendiz no tiene asignado un plan o esta cancelado');
         }
       },
     },
