@@ -345,9 +345,11 @@ import { mapActions, mapState } from "vuex";
 
             if (fechaAsistencia >= fechaInicioPlan && fechaAsistencia <= fechaFinalPlan) {
                 const diffMeses = (fechaAsistencia.getFullYear() - fechaInicioPlan.getFullYear()) * 12 + (fechaAsistencia.getMonth() - fechaInicioPlan.getMonth());
-
+console.log('FECHA DE ASISTENCIA: ',fechaAsistencia.getMonth());
                 if (fechaAsistencia <= hoy) {
-                    asistenciasPorMesArray[diffMeses-1]++;
+                    asistenciasPorMesArray[diffMeses]++;
+                    console.log('diferencia de neses: ', diffMeses);
+                    console.log('verificando array de registro por mes: ', asistenciasPorMesArray);
                 }
             }
         });

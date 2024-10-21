@@ -275,7 +275,7 @@ insert into perimetros (cabeza, cuello, brazo_relax, brazo_tensionado, antebrazo
 
 insert into asistencia (fecha, aprendiz) values ("2024-06-12 16:39:21", 1);
 insert into asistencia (fecha, aprendiz) values ("2024-07-14 16:30:31", 1);
-insert into asistencia (fecha, aprendiz) values ("2024-06-12 16:39:21", 1);
+insert into asistencia (fecha, aprendiz) values ("2024-07-15 16:39:21", 1);
 insert into asistencia (fecha, aprendiz) values ("2024-07-14 16:30:31", 2);
 insert into asistencia (fecha, aprendiz) values ("2024-06-12 16:39:21", 2);
 insert into asistencia (fecha, aprendiz) values ("2024-07-14 16:30:31", 2);

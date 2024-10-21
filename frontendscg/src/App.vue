@@ -378,6 +378,11 @@ section{
   outline: none;
   border: 1px solid var(--color-gris-medio);
 }
+textarea{
+  margin: 8px;
+  min-height: 100px;
+  width: 100%;
+}
 
 #formbutton{
   margin-top: 48px;

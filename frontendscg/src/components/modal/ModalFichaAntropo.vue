@@ -280,7 +280,8 @@ export default {
   overflow-y:auto;
   overflow-x: auto;
   width: auto;
-  height:76%;
+  height: auto;
+  max-height:76%;
   white-space: nowrap;
   filter: none;
   transform: none;

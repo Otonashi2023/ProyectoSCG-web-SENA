@@ -221,7 +221,7 @@
     text-align: center;
     overflow-y:auto;
     overflow-x: auto;
-    width: 70%;
+    width: 90%;
     height:76%;
     white-space: nowrap;
     filter: none;

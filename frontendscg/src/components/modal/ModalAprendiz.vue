@@ -80,7 +80,7 @@
     overflow-y:auto;
     overflow-x: auto;
     width: auto;
-    height: auto;
+    max-height: 76%;
     white-space: nowrap;
     backdrop-filter: blur(10px);
     filter: none;
