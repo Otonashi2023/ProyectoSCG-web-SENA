@@ -19,7 +19,7 @@
 </template>
 
   <script>
-  import ApexCharts from "vue3-apexcharts";
+import ApexCharts from "vue3-apexcharts";
 import { mapActions, mapState } from "vuex";
   
   export default {
@@ -308,19 +308,27 @@ import { mapActions, mapState } from "vuex";
             }
           });
           asistenciasPorSemana[i] = count > 0 ? count : 0;
+          console.log('Mirar: ', asistenciasPorSemana);
           i++;
         }
 
         let asistenciasAcumuladas = [];
         let acumulado = 0;
+        let diaDehoy = new Date();
+        let semanaVigente = this.getWeekNumber(diaDehoy);
+        console.log('Pistas: ',semanaVigente);
 
-        for (let i = 0; i < asistenciasPorSemana.length; i++) {
-          if (asistenciasPorSemana[i] !== null) {
+        if((semanaVigente -this.getWeekNumber(planFiltrado.inicio)) <= totalSemanas){
+          this.max = semanaVigente - this.getWeekNumber(planFiltrado.inicio);
+        }
+        console.log('Hasta1:', semanaVigente-this.getWeekNumber(planFiltrado.inicio));
+        console.log('Hasta2:', totalSemanas);
+        console.log('Hasta3' , this.max);
+
+        for (let i = 0; i < this.max; i++) {
             acumulado += asistenciasPorSemana[i];
-            asistenciasAcumuladas.push(acumulado);
-          } else {
-            asistenciasAcumuladas.push(null);
-          }
+            asistenciasAcumuladas[i] = acumulado;
+            console.log('ASISTENCIAS ACUMULADAS: ', asistenciasAcumuladas);
         }
 
         this.seriesSemanas[0].data = asistenciasAcumuladas;
@@ -331,23 +339,31 @@ import { mapActions, mapState } from "vuex";
 
       asistenciasPorMes() {
         const filtro = this.asistencias.filter(item => item.aprendiz.codigo === this.aprendiz.codigo);
+        console.log('FILTRO: ', filtro);
         const planFiltrado = this.planesFiltrados();
 
-        const fechaInicioPlan = new Date(planFiltrado.inicio);
+        const fechaInicioPlan = planFiltrado.inicio;
         console.log('FECHA DE INICIO: ', fechaInicioPlan);
-        const fechaFinalPlan = new Date(planFiltrado.finaliza);
+        const fechaArrayInicio = fechaInicioPlan.split('-').map(Number);
+        const fechaFinalPlan = planFiltrado.finaliza;
+        console.log('FECHA DE FINALIZACION: ', fechaFinalPlan);
 
         let asistenciasPorMesArray = new Array(planFiltrado.plan.meses).fill(null);
 
-        const hoy = new Date();
-        // Contar asistencias por mes
+        const hoy = new Date().toISOString().split('T')[0];
+        const hoyArray = hoy.split('-').map(Number);
+        console.log('HOY_:', hoy);
+
         filtro.forEach(asistencia => {
-            const fechaAsistencia = new Date(asistencia.fecha);
+            const fechaAsistencia = asistencia.fecha.split('T')[0];
+            console.log('FECHA DE ASISTENCIA: ', fechaAsistencia);
+            const fechaArrayAsistencia = fechaAsistencia.split('-').map(Number);
 
             if (fechaAsistencia >= fechaInicioPlan && fechaAsistencia <= fechaFinalPlan) {
-                const diffMeses = (fechaAsistencia.getFullYear() - fechaInicioPlan.getFullYear()) * 12 + (fechaAsistencia.getMonth() - fechaInicioPlan.getMonth());
-console.log('FECHA DE ASISTENCIA: ',fechaAsistencia.getMonth());
+                const diffMeses = (fechaArrayAsistencia[0] - fechaArrayInicio[0]) * 12 + (fechaArrayAsistencia[1] - fechaArrayInicio[1]);
+                console.log('FECHA DE ASISTENCIA: ', fechaArrayAsistencia[1]);
                 if (fechaAsistencia <= hoy) {
+                  console.log('Diff',diffMeses);
                     asistenciasPorMesArray[diffMeses]++;
                     console.log('diferencia de neses: ', diffMeses);
                     console.log('verificando array de registro por mes: ', asistenciasPorMesArray);
@@ -357,18 +373,16 @@ console.log('FECHA DE ASISTENCIA: ',fechaAsistencia.getMonth());
 
         let acumulado = 0;
 
-        if(hoy < new Date(planFiltrado.finaliza)){
-          this.max = hoy.getMonth() - fechaInicioPlan.getMonth();
+        if(hoy <= fechaFinalPlan){
+          this.max = (hoyArray[1] - fechaArrayInicio[1]) + 1;
         } else{
           this.max = planFiltrado.plan.meses;
         }
         console.log(asistenciasPorMesArray);
 
-        for (let i = 0; i < this.max; i++) { 
-          if(i< this.max) {   
-            acumulado += asistenciasPorMesArray[i];
-            asistenciasPorMesArray[i] = acumulado;       
-        }
+        for (let i = 0; i < this.max; i++) {  
+          acumulado += asistenciasPorMesArray[i];
+          asistenciasPorMesArray[i] = acumulado;       
       }      
 
     const sesionesPorMes = this.calcularSesionesPorMes();
