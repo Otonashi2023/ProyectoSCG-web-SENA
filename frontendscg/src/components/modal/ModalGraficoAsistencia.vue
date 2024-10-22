@@ -53,6 +53,19 @@ import { mapActions, mapState } from "vuex";
             data: [],
           },
         ],
+        tooltip: {
+          y: {
+            formatter: function (val, opts) {
+                  if (opts && opts.w && opts.w.config && opts.w.config.series && opts.w.config.series[1]) {
+                    const value = opts.w.config.series[opts.seriesIndex].data[opts.dataPointIndex];
+                    const total = opts.w.config.series[1].data[opts.w.config.series[1].data.length - 1];
+                    const percentage = ((value / total) * 100).toFixed(2);
+                    return `${percentage}% (${value})`;
+                  }
+                  return `${val}`;
+                }
+          }
+        }
       };
     },
     computed: {
@@ -95,8 +108,19 @@ import { mapActions, mapState } from "vuex";
           },
           yaxis: {
             title: {
-              text: "Cantidad de Asistencia",
+              text: "Cantidad y Pordentaje de Asistencias",
             },
+            labels: {
+              formatter: function (val, opts) {
+                if (opts && opts.w && opts.w.config && opts.w.config.series && opts.w.config.series[1]) {
+                  const value = opts.w.config.series[opts.seriesIndex].data[opts.dataPointIndex];
+                  const total = opts.w.config.series[1].data[opts.w.config.series[1].data.length - 1];
+                  const percentage = ((value / total) * 100).toFixed(2);
+                  return `${percentage}% (${value})`;
+                }
+                return `${val}`;
+              }
+            }
           },
           markers: {
             size: 5,
@@ -231,6 +255,7 @@ import { mapActions, mapState } from "vuex";
         const {asistenciasPerfectas, semanasCompletas} = asist;
         const semanasTotales = semanasCompletas;
         const totalAsistencias = asistenciasPerfectas;
+        console.log('IMPORTANTISIMO VERIFICAR: ', rutinasPorSemana);
 
         let rutinasAcumuladas = [];
         let etiquetasSemanas = [];
@@ -288,6 +313,7 @@ import { mapActions, mapState } from "vuex";
           fecha,
           semana: this.getWeekNumber(fecha)
         }));
+        console.log('ArrayX: ', arrayX);
 
         const { diasTotales } = this.obtenerValoresDelPlan();
         const { semanasCompletas } = this.calcularAsistenciaPerfecta(diasTotales);
@@ -295,9 +321,9 @@ import { mapActions, mapState } from "vuex";
 
         let asistenciasPorSemana = new Array(totalSemanas).fill(null);
         
-        let count;
+        let count = 0;
         let i = 0;
-        let minSemana = Math.min(...arrayX.map(({ semana }) => semana));
+        let minSemana = this.getWeekNumber(new Date(planFiltrado.inicio));
         const maxSemana = Math.max(...arrayX.map(({ semana }) => semana));
 
         for (let semana = minSemana; semana <= maxSemana; semana++){
@@ -320,7 +346,10 @@ import { mapActions, mapState } from "vuex";
 
         if((semanaVigente -this.getWeekNumber(planFiltrado.inicio)) <= totalSemanas){
           this.max = semanaVigente - this.getWeekNumber(planFiltrado.inicio);
+        } else {
+          this.max = asistenciasPorSemana.length;
         }
+
         console.log('Hasta1:', semanaVigente-this.getWeekNumber(planFiltrado.inicio));
         console.log('Hasta2:', totalSemanas);
         console.log('Hasta3' , this.max);
@@ -348,7 +377,7 @@ import { mapActions, mapState } from "vuex";
         const fechaFinalPlan = planFiltrado.finaliza;
         console.log('FECHA DE FINALIZACION: ', fechaFinalPlan);
 
-        let asistenciasPorMesArray = new Array(planFiltrado.plan.meses).fill(null);
+        let asistenciasPorMesArray = new Array(planFiltrado.plan.meses + 1).fill(null);
 
         const hoy = new Date().toISOString().split('T')[0];
         const hoyArray = hoy.split('-').map(Number);
@@ -358,9 +387,15 @@ import { mapActions, mapState } from "vuex";
             const fechaAsistencia = asistencia.fecha.split('T')[0];
             console.log('FECHA DE ASISTENCIA: ', fechaAsistencia);
             const fechaArrayAsistencia = fechaAsistencia.split('-').map(Number);
+            let diffMeses = 0;
 
             if (fechaAsistencia >= fechaInicioPlan && fechaAsistencia <= fechaFinalPlan) {
-                const diffMeses = (fechaArrayAsistencia[0] - fechaArrayInicio[0]) * 12 + (fechaArrayAsistencia[1] - fechaArrayInicio[1]);
+                diffMeses = (fechaArrayAsistencia[0] - fechaArrayInicio[0]) * 12 + (fechaArrayAsistencia[1] - fechaArrayInicio[1]);
+                const diffDias = fechaArrayAsistencia[2] - fechaArrayInicio[2];
+    
+              if (diffDias < 0) {
+                  diffMeses--;
+              }
                 console.log('FECHA DE ASISTENCIA: ', fechaArrayAsistencia[1]);
                 if (fechaAsistencia <= hoy) {
                   console.log('Diff',diffMeses);
@@ -374,7 +409,7 @@ import { mapActions, mapState } from "vuex";
         let acumulado = 0;
 
         if(hoy <= fechaFinalPlan){
-          this.max = (hoyArray[1] - fechaArrayInicio[1]) + 1;
+          this.max = (hoyArray[1] - fechaArrayInicio[1])+1;
         } else{
           this.max = planFiltrado.plan.meses;
         }
@@ -382,10 +417,12 @@ import { mapActions, mapState } from "vuex";
 
         for (let i = 0; i < this.max; i++) {  
           acumulado += asistenciasPorMesArray[i];
-          asistenciasPorMesArray[i] = acumulado;       
+          asistenciasPorMesArray[i] = acumulado;
+          console.log('Comparar: ',asistenciasPorMesArray);       
       }      
 
     const sesionesPorMes = this.calcularSesionesPorMes();
+    console.log('revisar',sesionesPorMes);
 
       let asistenciaPerfectaArray = new Array(planFiltrado.plan.meses).fill(null);
 
@@ -421,7 +458,7 @@ import { mapActions, mapState } from "vuex";
             const mesInicioActual = (anio === anioInicio) ? mesInicio : 0;
             const mesFinalActual = (anio === anioFinal) ? mesFinal : 11;
 
-            for (let mes = mesInicioActual; mes <= mesFinalActual; mes++) {
+            for (let mes = mesInicioActual; mes <= mesFinalActual+1; mes++) {
                 if (mes === 2) {
                     sesionesPorMes.push(16);
                 } else {
@@ -459,8 +496,8 @@ import { mapActions, mapState } from "vuex";
         this.arraysXY();
         this.asistenciasFiltradas();
         this.asistenciasPorMes();
-        this.cambiarIntervalo("semanas");
         this.calcularSesionesPorMes();
+        this.cambiarIntervalo("semanas");
       });
     }
   };

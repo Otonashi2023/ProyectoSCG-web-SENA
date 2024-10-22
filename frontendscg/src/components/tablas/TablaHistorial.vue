@@ -1,7 +1,7 @@
 <template>
     <!--Tabla que lista todos los registros de la entidad-->
   <div class="container2">
-    <h1>Tabla  de asistencias</h1>
+    <h1>Registro de asistencias</h1>
     <p style="display:grid; justify-content: end; padding-right: 20px ;">Resultados: {{ contador }}</p>
     <div id="scroll">
       <table>
