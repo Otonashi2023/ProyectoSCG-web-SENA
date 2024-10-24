@@ -302,8 +302,9 @@ import { mapActions, mapState } from "vuex";
       asistenciasFiltradas() {
         const filtro = this.asistencias.filter(item => item.aprendiz.codigo === this.aprendiz.codigo);
         const planFiltrado = this.planesFiltrados();
+        console.log('miga_planFiltraado:' ,planFiltrado);
         
-        const filtroAsistenciasPorPlan = filtro.filter(item => item.fecha > planFiltrado.inicio && item.fecha < planFiltrado.finaliza);
+        const filtroAsistenciasPorPlan = filtro.filter(item => item.fecha >= planFiltrado.inicio && item.fecha <= planFiltrado.finaliza);
         console.log('Miga: ',filtroAsistenciasPorPlan);
         const fechasFiltradas = filtroAsistenciasPorPlan.map(asistencia =>{
           const fechaAsistencia = new Date(asistencia.fecha);
@@ -316,13 +317,7 @@ import { mapActions, mapState } from "vuex";
         }).filter(fecha => fecha !== null);
 console.log('Miga2: ',fechasFiltradas);
 
-const fechasFiltradas2 = fechasFiltradas.map(fecha => {
-  let fechaObj = new Date(fecha);  // Convertir a objeto Date si es un string
-  fechaObj.setHours(fechaObj.getHours() - 5);  // Ajustar la hora restando 5
-  return fechaObj.toISOString().split('T')[0];  // Retornar la nueva fecha con la hora ajustada
-});
-console.log('miga2.5: ',fechasFiltradas2);
-        const arrayX = fechasFiltradas2.map(fecha => ({
+        const arrayX = fechasFiltradas.map(fecha => ({
           fecha,
           semana: this.getWeekNumber(fecha)
         }));
@@ -358,12 +353,12 @@ console.log('Miga3', totalSemanas);
         let diaDehoy = new Date();
         let semanaVigente = this.getWeekNumber(diaDehoy);
         console.log('Miga Semana vigente: ',semanaVigente);
-        let semanaInicio = this.getWeekNumber(planFiltrado.inicio);
-        let diferencia = (semanaVigente - semanaInicio);
+        let semanaInicio = minSemana;
+        let diferencia = ((semanaVigente+1) - semanaInicio);
         console.log('miga semana inicio:', semanaInicio);
         console.log('miga final: ', this.getWeekNumber(planFiltrado.finaliza),planFiltrado.finaliza);
         if(diferencia <= totalSemanas){
-          this.max = semanaVigente - this.getWeekNumber(planFiltrado.inicio);
+          this.max = diferencia;
         } else {
           this.max = asistenciasPorSemana.length;
         }
