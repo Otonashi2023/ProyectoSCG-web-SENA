@@ -65,6 +65,7 @@ export default{
         
         formatearFechaYHora(fecha) {
             const date = new Date(fecha);
+            date.setHours(date.getHours()-5);
             const [fechaParte, tiempoParte] = date.toISOString().split('T');
             const hora = tiempoParte.split('.')[0];
             return {

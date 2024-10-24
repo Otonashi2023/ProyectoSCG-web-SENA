@@ -117,6 +117,7 @@ export default{
         const fechaCompleta = this.ultimaAsistencia(codigo);
         if (fechaCompleta) {
           const date = new Date(fechaCompleta);
+          date.setHours(date.getHours()-5);
           const tiempoParte = date.toISOString().split('T')[1];
           return tiempoParte.split('.')[0];
         }
@@ -154,7 +155,6 @@ export default{
         const mesesAsumar = planEnCurso.plan.meses;
         const nuevaFecha = new Date(inicio);
         nuevaFecha.setMonth(nuevaFecha.getMonth() + mesesAsumar);
-        console.log('Nueva fecha:', nuevaFecha);
         
         if(nuevaFecha > finaliza){
           estadoStyle.estado = 'Cancelado';

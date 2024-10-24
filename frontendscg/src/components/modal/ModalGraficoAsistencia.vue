@@ -59,10 +59,13 @@ import { mapActions, mapState } from "vuex";
                   if (opts && opts.w && opts.w.config && opts.w.config.series && opts.w.config.series[1]) {
                     const value = opts.w.config.series[opts.seriesIndex].data[opts.dataPointIndex];
                     const total = opts.w.config.series[1].data[opts.w.config.series[1].data.length - 1];
-                    const percentage = ((value / total) * 100).toFixed(2);
-                    return `${percentage}% (${value})`;
+                    if (total > 0) {
+                      const porcentaje = ((value / total) * 100).toFixed(2);
+                      return `${porcentaje}% (${value})`;
+                    } else {
+                      return `0% (${value})`;
+                    }
                   }
-                  return `${val}`;
                 }
           }
         }
@@ -115,10 +118,13 @@ import { mapActions, mapState } from "vuex";
                 if (opts && opts.w && opts.w.config && opts.w.config.series && opts.w.config.series[1]) {
                   const value = opts.w.config.series[opts.seriesIndex].data[opts.dataPointIndex];
                   const total = opts.w.config.series[1].data[opts.w.config.series[1].data.length - 1];
-                  const percentage = ((value / total) * 100).toFixed(2);
-                  return `${percentage}% (${value})`;
+                  if (total > 0) {
+                    const porcentaje = ((value / total) * 100).toFixed(2);
+                    return `${porcentaje}% (${value})`;
+                  } else {
+                    return `0% (${value})`;
+                  }
                 }
-                return `${val}`;
               }
             }
           },
@@ -298,7 +304,7 @@ import { mapActions, mapState } from "vuex";
         const planFiltrado = this.planesFiltrados();
         
         const filtroAsistenciasPorPlan = filtro.filter(item => item.fecha > planFiltrado.inicio && item.fecha < planFiltrado.finaliza);
-        
+        console.log('Miga: ',filtroAsistenciasPorPlan);
         const fechasFiltradas = filtroAsistenciasPorPlan.map(asistencia =>{
           const fechaAsistencia = new Date(asistencia.fecha);
           if (!isNaN(fechaAsistencia)) {
@@ -308,56 +314,78 @@ import { mapActions, mapState } from "vuex";
             return null;
           }
         }).filter(fecha => fecha !== null);
+console.log('Miga2: ',fechasFiltradas);
 
-        const arrayX = fechasFiltradas.map(fecha => ({
+const fechasFiltradas2 = fechasFiltradas.map(fecha => {
+  let fechaObj = new Date(fecha);  // Convertir a objeto Date si es un string
+  fechaObj.setHours(fechaObj.getHours() - 5);  // Ajustar la hora restando 5
+  return fechaObj.toISOString().split('T')[0];  // Retornar la nueva fecha con la hora ajustada
+});
+console.log('miga2.5: ',fechasFiltradas2);
+        const arrayX = fechasFiltradas2.map(fecha => ({
           fecha,
           semana: this.getWeekNumber(fecha)
         }));
-        console.log('ArrayX: ', arrayX);
+        console.log('Miga_ArrayX: ', arrayX);
 
         const { diasTotales } = this.obtenerValoresDelPlan();
         const { semanasCompletas } = this.calcularAsistenciaPerfecta(diasTotales);
         const totalSemanas = semanasCompletas;
-
+console.log('Miga3', totalSemanas);
         let asistenciasPorSemana = new Array(totalSemanas).fill(null);
-        
+        console.log('miga4:',asistenciasPorSemana);
         let count = 0;
         let i = 0;
         let minSemana = this.getWeekNumber(new Date(planFiltrado.inicio));
+        console.log('miga minSemana', minSemana);
         const maxSemana = Math.max(...arrayX.map(({ semana }) => semana));
-
+        console.log('miga maxSemana', maxSemana);
         for (let semana = minSemana; semana <= maxSemana; semana++){
           count = 0;
           arrayX.forEach(({semana: semanaActual}) => {
             if(semanaActual === semana) {
+              console.log('miga semana actual:',semanaActual)
               count++;
             }
           });
           asistenciasPorSemana[i] = count > 0 ? count : 0;
-          console.log('Mirar: ', asistenciasPorSemana);
+          console.log('Miga Asitencia por semana: ', asistenciasPorSemana);
           i++;
         }
 
-        let asistenciasAcumuladas = [];
+        let asistenciasAcumuladas = new Array(totalSemanas).fill(null);
         let acumulado = 0;
         let diaDehoy = new Date();
         let semanaVigente = this.getWeekNumber(diaDehoy);
-        console.log('Pistas: ',semanaVigente);
-
-        if((semanaVigente -this.getWeekNumber(planFiltrado.inicio)) <= totalSemanas){
+        console.log('Miga Semana vigente: ',semanaVigente);
+        let semanaInicio = this.getWeekNumber(planFiltrado.inicio);
+        let diferencia = (semanaVigente - semanaInicio);
+        console.log('miga semana inicio:', semanaInicio);
+        console.log('miga final: ', this.getWeekNumber(planFiltrado.finaliza),planFiltrado.finaliza);
+        if(diferencia <= totalSemanas){
           this.max = semanaVigente - this.getWeekNumber(planFiltrado.inicio);
         } else {
           this.max = asistenciasPorSemana.length;
         }
-
-        console.log('Hasta1:', semanaVigente-this.getWeekNumber(planFiltrado.inicio));
-        console.log('Hasta2:', totalSemanas);
-        console.log('Hasta3' , this.max);
+        const diaDehoyFormatted = diaDehoy.toISOString().split('T')[0]; 
+        console.log('Miga diferencia:', semanaVigente-this.getWeekNumber(planFiltrado.inicio));
+        console.log('Miga Total semanas:', totalSemanas);
+        console.log('Miga Max' , this.max);
 
         for (let i = 0; i < this.max; i++) {
             acumulado += asistenciasPorSemana[i];
             asistenciasAcumuladas[i] = acumulado;
-            console.log('ASISTENCIAS ACUMULADAS: ', asistenciasAcumuladas);
+            console.log('Miga ASISTENCIAS ACUMULADAS: ', asistenciasAcumuladas);
+            console.log('Miga this.max: ', this.max);
+            if(i==this.max && diaDehoyFormatted <= planFiltrado.finaliza){ 
+            alert('Hola');             
+              acumulado += asistenciasPorSemana[i+1];
+              asistenciasAcumuladas[i+1] = acumulado;
+              console.log('Miga acumulada2: ',asistenciasAcumuladas);
+            }
+            console.log('miga i',i);
+            console.log('miga d',diaDehoyFormatted);
+            console.log('miga f',planFiltrado.finaliza);
         }
 
         this.seriesSemanas[0].data = asistenciasAcumuladas;
