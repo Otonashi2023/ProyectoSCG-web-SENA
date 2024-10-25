@@ -93,19 +93,15 @@ export default{
         verModal(value){
             if(value == true){
                 this.modal = true;
-                console.log('open: ',this.modal);
             } else{
                 this.modal = false;
-                console.log('close: ',this.modal);
             }  
         },
         verQR(value){
             if(value == true){
                 this.qr = true;
-                console.log('open: ',this.qr);
             } else{
                 this.qr = false;
-                console.log('close: ',this.qr);
             }  
         },
     }

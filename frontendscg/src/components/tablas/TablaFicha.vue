@@ -102,8 +102,6 @@ import { mapActions, mapMutations, mapState } from "vuex";
             await this.consultarFicha(value);
             await this.consultarFormacion(this.ficha.formacion.codigo);
             await this.$nextTick();
-            console.log('Formacion antes de ir a aprendiz: ', this.formacion
-            );
             this.$router.push('aprendiz');
           }
         }

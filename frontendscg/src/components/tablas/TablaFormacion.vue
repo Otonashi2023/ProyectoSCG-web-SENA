@@ -54,7 +54,6 @@ import { mapActions, mapMutations, mapState } from "vuex";
         axios.get("http://localhost:8080/api/formacion/listar")
         .then((response)=>{
           this.nombres= response.data;
-          console.log('NOMBRES: ', this.nombres);
           this.codigo=null;
         })
         .catch((error)=>{
@@ -74,7 +73,7 @@ import { mapActions, mapMutations, mapState } from "vuex";
           this.obtenerFormaciones();
         })
         .catch((error)=>{
-          console.log("Error al eliminar el nombre de la formacion", error);
+          console.error("Error al eliminar el nombre de la formacion", error);
           alert("No se puede borrar, este dato esta siendo usado.");
           this.codigo=null;
         });

@@ -14,6 +14,7 @@
         </select> 
       </div>   
     <apexchart type="line" height="350" :options="chartOptions" :series="series"></apexchart>
+    <p v-show="active">Semana {{ numSemana }} en curso : <span style="color:red">{{ asisSemena }}</span> asistencias {{ xPorciento }}%</p>
     <!--p>Semna: {{ fechaIn }}</p>
     <input type="text" v-model="fechaIn2" @input="evaluarFecha()"-->
     </div>
@@ -30,6 +31,10 @@ import { mapActions, mapState } from "vuex";
     },
     data() {
       return {
+        xPorciento: null,
+        active:false,
+        asisSemena:'',
+        numSemana: '',
         //fechaIn: '',
         etiquetasSemanas: [],
         nombreMes1: [],
@@ -330,9 +335,9 @@ console.log('Miga2: ',fechasFiltradas);*/
         console.log('Miga_ArrayX: ', arrayX);
 
         const { diasTotales } = this.obtenerValoresDelPlan();
-        const { semanasCompletas } = this.calcularAsistenciaPerfecta(diasTotales);
+        const { asistenciasPerfectas, semanasCompletas } = this.calcularAsistenciaPerfecta(diasTotales);
         const totalSemanas = semanasCompletas;
-        const intervaloS = totalSemanas + 1;
+        const intervaloS = totalSemanas;
 console.log('Miga3', totalSemanas);
         let asistenciasPorSemana = new Array(intervaloS).fill(null);
         console.log('miga4:',asistenciasPorSemana);
@@ -384,6 +389,16 @@ console.log('Miga3', totalSemanas);
               asistenciasAcumuladas[i+1] = acumulado;
               console.log('Miga acumulada2: ',asistenciasAcumuladas);
             }*/
+           if(i == this.max-1 && asistenciasPorSemana [i+1]!= null){
+            acumulado += asistenciasPorSemana[i+1];
+            this.asisSemena = acumulado;
+            this.numSemana = i+2;
+            this.xPorciento = ((this.asisSemena * 100)/ asistenciasPerfectas).toFixed(2);
+            this.active = true;
+           }
+           else{
+            this.active =false;
+           }
             console.log('miga i',i);
             console.log('miga d',diaDehoyFormatted);
             console.log('miga f',planFiltrado.finaliza);

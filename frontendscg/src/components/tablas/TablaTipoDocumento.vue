@@ -93,7 +93,6 @@ import { mapActions, mapMutations, mapState } from "vuex";
           if(this.codigo==null){
             await this.consultarTipoDocumento(value);
             await this.$nextTick();
-            console.log('retorno1');
             this.$router.push('aprendiz');
           }
         }
@@ -101,7 +100,6 @@ import { mapActions, mapMutations, mapState } from "vuex";
           if(this.codigo==null){
             await this.consultarTipoDocumento(value);
             await this.$nextTick();
-            console.log('retorno2');
             this.$router.push('personal');
           }
         }    

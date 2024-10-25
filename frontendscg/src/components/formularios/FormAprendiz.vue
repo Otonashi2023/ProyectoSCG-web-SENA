@@ -146,18 +146,14 @@ export default {
         correo: this.correo,
         foto: this.persona.foto,
       };
-      console.log('data: ',this.data);
     },
     datosAprendiz(personaId){
-      console.log('aqui dentro del data: ', personaId);
       this.dataAprendiz = {
         codigo: this.aprendiz.codigo,
         restricMedicas: this.restricMedicas,
         persona: personaId,
         ficha: this.ficha.codigo,
       };
-
-      console.log('este es el data: ', this.dataAprendiz);
     },
 
     servicio(){
@@ -182,7 +178,6 @@ export default {
         await this.guardarPersona(this.data);
         await this.$nextTick();
         const personaId = this.persona.codigo;
-        console.log('persona: ',this.persona);
 
         const formData = new FormData();
         formData.append('file', this.foto);
@@ -206,8 +201,6 @@ export default {
         await this.actualizarPersona({codigo: idPersona, data: this.data});
         await this.$nextTick();
         const personaId = this.persona.codigo;
-        console.log('persona: ',this.persona);
-        console.log('personaId: ', personaId);
 
         const formData = new FormData();
         formData.append('file', this.foto);
@@ -217,7 +210,6 @@ export default {
         const idAprendiz = this.aprendiz?.codigo;
         await this.actualizarAprendiz({codigo: idAprendiz, data: this.dataAprendiz});
         await this.$nextTick();
-        console.log('aprendiz: ',this.aprendiz)
         await this.limpiarDatoact1();
         await this.$nextTick();
         this.$emit('leave');
@@ -268,12 +260,10 @@ export default {
     async compararDatos() {
       await this.consultarAllPersonas();
       await this.$nextTick();
-      console.log('LISTA DE PERSONAS: ',this.personas);
       if (Array.isArray(this.personas)) {
         this.found = this.personas.find(item =>
           item.cedula === this.cedula || 
           item.correo === this.correo);
-        console.log('FOUND: ', this.found);
 
         if (this.found) {
           if(this.datoact1 == null){
@@ -312,7 +302,6 @@ export default {
     storageTemporal(){
       this.datosPersona(); 
       this.addPersona(this.data);
-      console.log('el data es: ',this.data);
       this.datosAprendiz()
       this.addAprendiz(this.dataAprendiz);
     },

@@ -71,7 +71,6 @@ export default {
     cargarDatos(){
       this.numero = this.ficha.numero;
       this.miFormacion = this.formacion.nombre;
-      console.log('formacion: ', this.formacion?.nombre);
     },
     guardar(){
       axios
@@ -177,7 +176,6 @@ export default {
         numero: this.numero,
         formacion: this.miFormacion,
       };
-      console.log('NUMERO: ', this.data.numero);
     },
 
     callMetodoN(){
