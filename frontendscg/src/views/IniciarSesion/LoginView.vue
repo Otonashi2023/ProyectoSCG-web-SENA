@@ -84,7 +84,8 @@ import { mapActions } from 'vuex';
             this.updateVisibleIn(true);
             this.updateVisibleOut(false);
           }, 1500); // 1500 milisegundos = 1.5 segundos
-          console.log("Bienvenido");       
+          console.log("Bienvenido"); 
+          this.reproducirAudio();      
         }
         else{
           this.error = true;
@@ -124,6 +125,10 @@ import { mapActions } from 'vuex';
     },
     redireccionar(){
       this.$router.push(this.$route.query.redirect || '/');
+    },
+    reproducirAudio() {
+      const audio = new Audio(require('@/assets/sound/introWeb.mp3'));
+      audio.play();
     },
   },
   mounted() {
