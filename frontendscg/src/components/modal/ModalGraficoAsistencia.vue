@@ -14,8 +14,8 @@
         </select> 
       </div>   
     <apexchart type="line" height="350" :options="chartOptions" :series="series"></apexchart>
-    <p>Semna: {{ fechaIn }}</p>
-    <input type="text" v-model="fechaIn2" @input="evaluarFecha()">
+    <!--p>Semna: {{ fechaIn }}</p>
+    <input type="text" v-model="fechaIn2" @input="evaluarFecha()"-->
     </div>
   </div>
 </template>
@@ -30,7 +30,7 @@ import { mapActions, mapState } from "vuex";
     },
     data() {
       return {
-        fechaIn: '',
+        //fechaIn: '',
         etiquetasSemanas: [],
         nombreMes1: [],
         cargando: true,
@@ -516,10 +516,9 @@ console.log('Miga3', totalSemanas);
       cerrarModal(){
         this.$emit('showModal', false);
       },
-      evaluarFecha(){
+      /*evaluarFecha(){
         this.fechaIn = this.getWeekNumber(new Date(this.fechaIn2));
-      }
-      
+      }*/      
     },
     mounted(){
       this.consultarAll().then(() => {
