@@ -155,17 +155,14 @@ import { mapActions, mapState } from 'vuex';
           await this.guardarPersona(this.data);
           await this.$nextTick();
           const personaId = this.persona.codigo;
-          console.log('codigo persona para personal: ',personaId);
 
           const formData = new FormData();
           formData.append('file', this.foto);
           await this.subirFotoPersona({codigo: personaId, formData});
  
           this.datosPersonal(personaId);
-          console.log('dataPersonal: ', this.dataPersonal);
           await this.guardarPersonal(this.dataPersonal);
           const personalId = this.personal.codigo;
-          console.log('codigo personal para usuario: ',personalId);
   
           this.datosUsuario(personalId);
           await this.guardarUsuario(this.dataUsuario);
@@ -177,28 +174,17 @@ import { mapActions, mapState } from 'vuex';
       },
 
       async actualizarDatos(){
-        console.log('USUARIO  = ',this.usuario);
-        console.log('PERSONAL = ',this.persobal);
-        console.log('PERSONA = ',this.persona);
-        console.log('CARGO = ',this.cargo);
-        console.log('DATAPERSONAL = ',this.dataPersonal);
         try {
           this.datosPersona();
-          console.log('DataPersona: ', this.data);
           const personaId = this.persona.codigo;
-          console.log('PERSONA: ',personaId);
           await this.actualizarPersona({codigo:personaId, data:this.data});
-          console.log('MOSTRAR PERSONA', this.persona);
 
           const formData = new FormData();
           formData.append('file', this.foto);
           await this.subirFotoPersona({codigo: personaId, formData});
  
           this.datosPersonal(personaId);
-          console.log('???????????',this.personal);
           const personalId = this.personal.codigo;
-          console.log('SEGUNDA PARTE EN DATA: ',this.dataPersonal),
-          console.log('SEGUNDA PARTE EN CODIGO: ',this.personalId),
           await this.actualizarPersonal({codigo:personalId, data:this.dataPersonal});
 
           this.datosUsuario(personalId);
@@ -206,7 +192,6 @@ import { mapActions, mapState } from 'vuex';
          
           await this.actualizarUsuario({codigo:usuarioId, data:this.dataUsuario});
           await this.consultarUsuario(usuarioId);
-          console.log('VERIFICANDO USUARIO: ', this.usuario);
           await this.$nextTick();
 
           this.limpiarDatoact2();
@@ -227,10 +212,6 @@ import { mapActions, mapState } from 'vuex';
             const foundUser = this.usuarios.find(user =>
             user.username.trim() === username &&
             user.password.trim() === password);
-            console.log('LOCALSTORE User: ',username,'LOCALSTORE PASS: ',password);
-            console.log('USUARIO-User: ',this.usuario.username,'USUARIO-Pass: ',this.usuario.password);
-            console.log('DATO1',this.datoact2);
-            console.log('DATO2',this.usuario.codigo);
             if(this.datoact2 == foundUser.codigo){
               localStorage.setItem('username',this.usuario.username);
               localStorage.setItem('password', this.usuario.password);
@@ -253,10 +234,7 @@ import { mapActions, mapState } from 'vuex';
           const toNumberPersonal = typeof idPersonal === 'number'
               ? idPersonal
               : '';
-          console.log('VALOR DE IdPERSONAL: ',toNumberPersonal);
           await this.saveIdPersonal(toNumberPersonal);
-          console.log('idPersonal: ',idPersonal);
-          console.log('ID personal en consultar: ',this.idPersonal);
 
           if(idPersonal != null){
             await this.consultarPersonal(idPersonal);
@@ -267,7 +245,6 @@ import { mapActions, mapState } from 'vuex';
               await this.consultarCargo(idCargo);
             }
             if(idPersona != null){
-              console.log('IDPERSONA: ',idPersona);
               await this.consultarPersona(idPersona);
               const  idDocumento = this.persona?.tipoDocumento?.codigo;
 
@@ -276,14 +253,9 @@ import { mapActions, mapState } from 'vuex';
               }
               this.urlImagen();
             }
-          }
-          console.log('Verificar TIPODOCUMENTO: ',this.tipoDocumento);
-          console.log('Verificar CARGO: ',this.cargo);
-          console.log('Verificar PERSONA: ',this.persona);
-          console.log('Verificar PERSONAL: ',this.personal);
-          console.log('Verificar USUARIO: ',this.usuario); 
+          } 
         } catch(error){
-          console.log('error al consultar personal',error);
+          console.error('error al consultar personal',error);
         }
       },
 
@@ -309,7 +281,6 @@ import { mapActions, mapState } from 'vuex';
         this.foto = file;
       // Crear una URL para la previsualización
       this.imagePreview = URL.createObjectURL(file);
-      console.log('IMAGENPREVIEW: ',this.imagenPreview);
       }
       else{
         this.urlImagen();
@@ -349,10 +320,6 @@ import { mapActions, mapState } from 'vuex';
 
           if (foundUser) {
             if(!this.datoact2){
-              console.log(`Username: "${foundUser.username}", Username buscado: "${username}"`);
-              console.log(`Password: "${foundUser.password}", Password buscado: "${password}"`);
-              console.log(`Cédula: "${foundUser.personal?.persona?.cedula}", Cédula buscada: "${cedula}"`);
-              console.log(`Correo: "${foundUser.personal?.persona?.correo}", Correo buscado: "${correo}"`);
               if (foundUser.username === username) {
                 alert(`Username: "${foundUser.username}" ya existe`);
               } else if (foundUser.password === password) {
@@ -393,21 +360,17 @@ import { mapActions, mapState } from 'vuex';
         if(this.datoact2!=null){
           this.modificar=true;
           this.salvar=false;
-          console.log('Verificar PERSONA: ',this.persona);
-          console.log('Verificar PERSONAL: ',this.personal);
-          console.log('Verificar USUARIO: ',this.usuario);
         }
       },
       async storageTemporal(){
         this.datosPersona();
-        console.log('data: ',this.data);
 
         this.addPersona(this.data);
         this.datosPersonal();
-        console.log('dataPErsoan: ',this.dataPersonal);
+
         this.addPersonal(this.dataPersonal);
         this.datosUsuario();
-        console.log('dataUsuario:', this.dataUsuario);
+        
         this.addUsuario(this.dataUsuario);
       },
       callMetodoN(){

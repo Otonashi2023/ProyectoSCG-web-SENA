@@ -86,10 +86,8 @@ export default{
         verModal(value){
             if(value == true){
                 this.modal = true;
-                console.log('open: ',this.modal);
             } else{
                 this.modal = false;
-                console.log('close: ',this.modal);
             }  
         },
     }

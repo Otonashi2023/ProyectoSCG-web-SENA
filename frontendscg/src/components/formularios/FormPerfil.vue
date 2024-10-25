@@ -90,6 +90,7 @@ export default {
     }
   },
     computed:{
+      ...mapState(['user']),
       ...mapState('usuario',['usuario','usuarios']),
       ...mapState('personal',['personal']),
       ...mapState('persona',['persona']),
@@ -97,17 +98,31 @@ export default {
     },
     methods:{
       ...mapMutations(['clearSearchQuery']),
-      ...mapActions('persona',['actualizarPersona','consultarPersona','subirFotoPersona']),
-      ...mapActions('personal',['actualizarPersonal','consultarPersonal']),
-      ...mapActions('usuario',['actualizarUsuario','consultarAllUsuarios','consultarUsuario']),
+      ...mapActions('persona',['actualizarPersona','consultarPersona','subirFotoPersona','limpiarPersona']),
+      ...mapActions('personal',['actualizarPersonal','consultarPersonal','limpiarPersonal']),
+      ...mapActions('usuario',['actualizarUsuario','consultarAllUsuarios','consultarUsuario','limpiarUsuario']),
       ...mapActions(['resetVisibleIn','resetVisibleOut']),
 
       async datosPerfil(){
+        this.limpiarUsuario();
+        this.limpiarPersonal();
+        this.limpiarPersona();
+        await this.consultarAllUsuarios();
+        await this.$nextTick();
+
+        if(Array.isArray(this.usuarios)){
+          const foundUser = this.usuarios.find(user =>
+          user.username === this.user.username);
+  
+          if (foundUser) {
+              const idUsuario = foundUser.codigo;
+              await this.consultarUsuario(idUsuario);
+              await this.$nextTick();
+            }
+        }
         try{
           this.logear = [this.usuario.username, this.usuario.password];
           await this.$nextTick();
-          console.log('LOGEAR: ', this.logear);
-          console.log('1: ',this.usuario);
           const idPersonal = this.usuario?.personal?.codigo;
           await this.consultarPersonal(idPersonal);
           const idPersona = this.personal.persona.codigo;
@@ -118,7 +133,7 @@ export default {
           this.urlImagen();
         }
         catch(error){
-          console.log('error al cargar los datos del perfil', error);
+          console.error('error al cargar los datos del perfil', error);
         }
     },
 
@@ -148,18 +163,14 @@ export default {
           persona: personaId,
         };
         const personalId = this.personal.codigo;
-        console.log('ID personal  XD: ', personalId);
-        console.log('dataPersonal:',dataPersonal);
         await this.actualizarPersonal({codigo:personalId, data:dataPersonal});
         await this.$nextTick();
-        console.log('Personal: ', this.personal);
         
         const dataUsuario = {
           username: this.usuario.username,
           password: this.usuario.password,
           personal: personalId,
         };
-        console.log('DataUsuario: ',dataUsuario);
 
         if (localStorage.getItem('username') && localStorage.getItem('password')) {
           localStorage.setItem('username',this.usuario.username);
@@ -167,11 +178,9 @@ export default {
         }
 
         const usuarioId = this.usuario.codigo;
-        console.log('usuarioId: ',usuarioId);
         await this.actualizarUsuario({codigo:usuarioId, data:dataUsuario});
         await this.consultarUsuario(usuarioId);
         await this.$nextTick();
-        console.log('usuario new,',this.usuario);
         
         if(this.logear[0] !== dataUsuario.username || this.logear[1] !== dataUsuario.password){
           this.$store.dispatch('logout');
@@ -181,7 +190,6 @@ export default {
         } else{
           this.$router.push('/');
         }
-        console.log('resultado final: ', this.usuario);
       } catch (error) {
         console.error("Error al guardar los cambios:", error);
         throw error;
@@ -225,7 +233,6 @@ export default {
   },
   mounted(){
     this.clearSearchQuery();
-    console.log('usuario perfil: ', this.usuario);
   }
 }
 </script>

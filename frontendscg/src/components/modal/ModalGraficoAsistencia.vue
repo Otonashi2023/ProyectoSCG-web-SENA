@@ -216,7 +216,6 @@ import { mapActions, mapState } from "vuex";
             categories: this.nombreMes1
           }
         };
-        console.log(diasTotales);
         return diasTotales;
       },
 
@@ -269,7 +268,6 @@ import { mapActions, mapState } from "vuex";
         const {asistenciasPerfectas, semanasCompletas} = asist;
         const semanasTotales = semanasCompletas;
         const totalAsistencias = asistenciasPerfectas;
-        console.log('IMPORTANTISIMO VERIFICAR: ', rutinasPorSemana);
 
         let rutinasAcumuladas = [];
         let etiquetasSemanas = [];
@@ -309,54 +307,33 @@ import { mapActions, mapState } from "vuex";
 
       asistenciasFiltradas() {
         const filtro = this.asistencias.filter(item => item.aprendiz.codigo === this.aprendiz.codigo);
-        console.log('miga',filtro);
         const planFiltrado = this.planesFiltrados();
-        console.log('miga_planFiltraado:' ,planFiltrado);
         const fechaString = filtro.map(item => item.fecha.split('T')[0]);
-        console.log('miga to String;', fechaString);
         
         const filtroAsistenciasPorPlan = fechaString.filter(item => item >= planFiltrado.inicio && item <= planFiltrado.finaliza);
-        console.log('Miga filtro por asistencia Plan: ',filtroAsistenciasPorPlan);
-        /*const fechasFiltradas = filtroAsistenciasPorPlan.map(asistencia =>{
-          const fechaAsistencia = new Date(asistencia.fecha);
-          if (!isNaN(fechaAsistencia)) {
-            return fechaAsistencia.toISOString().split('T')[0];
-          } else {
-            console.error("Fecha inválida: ", asistencia.fecha);
-            return null;
-          }
-        }).filter(fecha => fecha !== null);
-console.log('Miga2: ',fechasFiltradas);*/
 
         const arrayX = filtroAsistenciasPorPlan.map(fecha => ({
           fecha,
           semana: this.getWeekNumber(fecha)
         }));
-        console.log('Miga_ArrayX: ', arrayX);
 
         const { diasTotales } = this.obtenerValoresDelPlan();
         const { asistenciasPerfectas, semanasCompletas } = this.calcularAsistenciaPerfecta(diasTotales);
         const totalSemanas = semanasCompletas;
         const intervaloS = totalSemanas;
-console.log('Miga3', totalSemanas);
         let asistenciasPorSemana = new Array(intervaloS).fill(null);
-        console.log('miga4:',asistenciasPorSemana);
         let count = 0;
         let i = 0;
         let minSemana = this.getWeekNumber(new Date(planFiltrado.inicio));
-        console.log('miga minSemana', minSemana);
         const maxSemana = Math.max(...arrayX.map(({ semana }) => semana));
-        console.log('miga maxSemana', maxSemana);
         for (let semana = minSemana; semana <= maxSemana; semana++){
           count = 0;
           arrayX.forEach(({semana: semanaActual}) => {
             if(semanaActual === semana) {
-              console.log('miga semana actual:',semanaActual)
               count++;
             }
           });
           asistenciasPorSemana[i] = count > 0 ? count : 0;
-          console.log('Miga Asitencia por semana: ', asistenciasPorSemana);
           i++;
         }
 
@@ -364,31 +341,18 @@ console.log('Miga3', totalSemanas);
         let acumulado = 0;
         let diaDehoy = new Date();
         let semanaVigente = this.getWeekNumber(diaDehoy);
-        console.log('Miga Semana vigente: ',semanaVigente);
         let semanaInicio = minSemana;
         let diferencia = ((semanaVigente) - semanaInicio);
-        console.log('miga semana inicio:', semanaInicio);
-        console.log('miga final: ', this.getWeekNumber(planFiltrado.finaliza),planFiltrado.finaliza);
         if(diferencia <= totalSemanas){
           this.max = diferencia;
         } else {
           this.max = asistenciasPorSemana.length;
         }
-        const diaDehoyFormatted = diaDehoy.toISOString().split('T')[0];
-        console.log('Miga Total semanas:', totalSemanas);
-        console.log('Miga Max' , this.max);
 
         for (let i = 0; i < this.max; i++) {
             acumulado += asistenciasPorSemana[i];
             asistenciasAcumuladas[i] = acumulado;
-            console.log('Miga ASISTENCIAS ACUMULADAS: ', asistenciasAcumuladas);
-            console.log('Miga this.max: ', this.max);
-            /*if(i==this.max && diaDehoyFormatted <= planFiltrado.finaliza){ 
-            alert('Hola');             
-              acumulado += asistenciasPorSemana[i+1];
-              asistenciasAcumuladas[i+1] = acumulado;
-              console.log('Miga acumulada2: ',asistenciasAcumuladas);
-            }*/
+            
            if(i == this.max-1 && asistenciasPorSemana [i+1]!= null){
             acumulado += asistenciasPorSemana[i+1];
             this.asisSemena = acumulado;
@@ -399,9 +363,6 @@ console.log('Miga3', totalSemanas);
            else{
             this.active =false;
            }
-            console.log('miga i',i);
-            console.log('miga d',diaDehoyFormatted);
-            console.log('miga f',planFiltrado.finaliza);
         }
 
         this.seriesSemanas[0].data = asistenciasAcumuladas;
@@ -412,24 +373,19 @@ console.log('Miga3', totalSemanas);
 
       asistenciasPorMes() {
         const filtro = this.asistencias.filter(item => item.aprendiz.codigo === this.aprendiz.codigo);
-        console.log('FILTRO: ', filtro);
         const planFiltrado = this.planesFiltrados();
 
         const fechaInicioPlan = planFiltrado.inicio;
-        console.log('FECHA DE INICIO: ', fechaInicioPlan);
         const fechaArrayInicio = fechaInicioPlan.split('-').map(Number);
         const fechaFinalPlan = planFiltrado.finaliza;
-        console.log('FECHA DE FINALIZACION: ', fechaFinalPlan);
 
         let asistenciasPorMesArray = new Array(planFiltrado.plan.meses + 1).fill(null);
 
         const hoy = new Date().toISOString().split('T')[0];
         const hoyArray = hoy.split('-').map(Number);
-        console.log('HOY_:', hoy);
 
         filtro.forEach(asistencia => {
             const fechaAsistencia = asistencia.fecha.split('T')[0];
-            console.log('FECHA DE ASISTENCIA: ', fechaAsistencia);
             const fechaArrayAsistencia = fechaAsistencia.split('-').map(Number);
             let diffMeses = 0;
 
@@ -440,12 +396,8 @@ console.log('Miga3', totalSemanas);
               if (diffDias < 0) {
                   diffMeses--;
               }
-                console.log('FECHA DE ASISTENCIA: ', fechaArrayAsistencia[1]);
                 if (fechaAsistencia <= hoy) {
-                  console.log('Diff',diffMeses);
-                    asistenciasPorMesArray[diffMeses]++;
-                    console.log('diferencia de neses: ', diffMeses);
-                    console.log('verificando array de registro por mes: ', asistenciasPorMesArray);
+                  asistenciasPorMesArray[diffMeses]++;
                 }
             }
         });
@@ -457,16 +409,13 @@ console.log('Miga3', totalSemanas);
         } else{
           this.max = planFiltrado.plan.meses;
         }
-        console.log(asistenciasPorMesArray);
 
         for (let i = 0; i < this.max; i++) {  
           acumulado += asistenciasPorMesArray[i];
-          asistenciasPorMesArray[i] = acumulado;
-          console.log('Comparar: ',asistenciasPorMesArray);       
+          asistenciasPorMesArray[i] = acumulado;       
       }      
 
     const sesionesPorMes = this.calcularSesionesPorMes();
-    console.log('revisar',sesionesPorMes);
 
       let asistenciaPerfectaArray = new Array(planFiltrado.plan.meses).fill(null);
 
@@ -491,10 +440,6 @@ console.log('Miga3', totalSemanas);
         const anioFinal = parseInt(planFiltrado.finaliza.split('-')[0]);
         const mesInicio = parseInt(planFiltrado.inicio.split('-')[1]);
         const mesFinal = parseInt(planFiltrado.finaliza.split('-')[1])-1; 
-        console.log(anioInicio);
-        console.log(anioFinal);
-        console.log(mesInicio);
-        console.log(mesFinal);
 
         const sesionesPorMes = [];
 
@@ -510,8 +455,6 @@ console.log('Miga3', totalSemanas);
                 }
             }
         }
-
-        console.log(sesionesPorMes);
         return sesionesPorMes;
       },
 

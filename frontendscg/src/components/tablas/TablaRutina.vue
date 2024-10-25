@@ -60,9 +60,7 @@ import { mapActions, mapMutations, mapState } from "vuex";
         axios.get("http://localhost:8080/api/rutina/listar")
         .then((response)=>{
           this.rutinas= response.data;
-          console.log('RUTINAS: ', this.rutinas);
           this.datos2act();
-          console.log('DATOS2 aqui: ',typeof this.datos2);
           this.codigo=null;
         })
         .catch((error)=>{
@@ -80,14 +78,12 @@ import { mapActions, mapMutations, mapState } from "vuex";
           this.obtenerRutinas();                   
         })
         .catch((error)=>{
-          console.log("Error al eliminar rutina", error);
+          console.error("Error al eliminar rutina", error);
         });
       },
       async datos2act(){
-        console.log('RUTI:', this.rutinas);
         await this.actionDatos2(this.rutinas);
         await this.$nextTick();
-        console.log('AQUIIIIIII:',this.datos2);
       },
 
       consultarbyId(value){

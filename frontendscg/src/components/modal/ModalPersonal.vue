@@ -39,7 +39,6 @@
     },
     methods: {  
       urlImagen(){
-        console.log('PERSONAL: ',this.personal);
         const baseUrl = 'http://localhost:8080';
         const imagePreview = this.personal.persona.foto
           ? `${baseUrl}${this.personal.persona.foto}`

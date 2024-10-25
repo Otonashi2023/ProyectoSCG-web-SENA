@@ -65,7 +65,6 @@ export default {
       this.inicio= dateInicio.toISOString().split('T')[0];
       let date = new Date(dataInput);
       let incrementoMes =this.meses;
-      console.log(incrementoMes);
       let mesTotal = date.getMonth() + incrementoMes;
 
       if (mesTotal >= 12) {
@@ -80,7 +79,6 @@ export default {
       }
       if(this.finaliza != null && this.finaliza != undefined){
         this.finaliza = date.toISOString().split('T')[0];
-        console.log('Fecha: ', this.finaliza);
       } else{
         this.finaliza = '';
       }
@@ -107,7 +105,6 @@ export default {
       this.meses = this.aprendizPlan?.plan?.meses;
     },
     verificar(){
-      console.log('codigo del plan: ',this.aprendizPlan?.plan?.codigo);
       if(this.aprendizPlan?.plan?.codigo == null || this.aprendizPlan?.plan?.codigo == undefined){
         alert('Elija un plan primero');
       }
@@ -120,8 +117,7 @@ export default {
         finaliza:this.finaliza,
         aprendiz: this.aprendiz.codigo,
         plan: this.aprendizPlan.plan.codigo,          
-      };
-      console.log('DATA: ', this.data); 
+      }; 
   },
   servicio(){
       if(this.salvar==true){
@@ -163,10 +159,8 @@ export default {
       await this.consultarAprendizPlan(idAprendizPlan);
       await this.$nextTick();
       this.cargarDatos();
-
-      console.log('idAprendizPlan: ', idAprendizPlan);
-      console.log('aprendizPlan: ', this.aprendizPlan);
     },
+    
     clear(){
       this.vplan = '';
       this.inicio = '';
@@ -174,7 +168,6 @@ export default {
       this.meses= '';
     },
     loadDatos3(){
-      console.log('APRENDIZ PLAN: ', this.aprendizPlan);
       this.vplan = this.aprendizPlan?.plan?.tipoPlan?.nombre;
       this.meses = this.aprendizPlan?.plan?.meses;
       this.setCurrentDate();
@@ -207,7 +200,6 @@ export default {
     callMetodoP(){
       this.limpiarRetorno4();
       this.actualizarRetorno4('retorno');
-      console.log('retorno4: ', this.retorno4);
       this.$router.push('planRutina');
     },
   },

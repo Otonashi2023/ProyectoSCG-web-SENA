@@ -78,9 +78,8 @@ import { mapActions, mapMutations, mapState } from "vuex";
           await this.$nextTick();
           console.log('numero de ficha eliminada: ', value)
           this.filtrarAprendiz();
-          console.log('ficha filtrada: ',this.listaFiltrada);
         } catch(error){
-          console.log(error);
+          console.error(error);
         } 
       },
       async filtrarAprendiz(){
@@ -150,14 +149,10 @@ import { mapActions, mapMutations, mapState } from "vuex";
         return estadoStyle;
       },
       async abrirModal(value){
-        console.log('idFichaAntropo: ', value);
         await this.consultarPerimetrosAll();
         await this.$nextTick();
-        console.log(this.perimetrosAll);
         const perimetrosFiltrado = this.perimetrosAll.find(item => item?.fichaantropo?.codigo === value);
-        console.log('perimetro filtrado: ', perimetrosFiltrado);
         await this.consultarPerimetros(perimetrosFiltrado.codigo);
-        console.log('PERIMETROS ANTES DE ABRIR EL MODAL: ',this.perimetros);
         await this.consultarFichaAntropo(value);
         await this.$nextTick();
         const modal =true;

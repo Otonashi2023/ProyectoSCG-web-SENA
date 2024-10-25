@@ -108,11 +108,7 @@ export default{
       },  
       async abrirModal(value){
         this.limpiarAprendizPlan();
-        console.log('APRENDIZ_PLAN_CLEAR: ',this.aprendizPlan);
-        console.log('APRENDIZ_PLAN_SETBEFORE: ',this.aprendizPlan);
-        console.log('VALUE: ', value);
         await this.consultarAprendizPlan(value);
-        console.log('AQUI EN TABLA APRENDIZ_PLAN_AFTER: ', this.aprendizPlan);
         const modal =true;
         this.$emit('verModal', modal);
       },
@@ -138,7 +134,6 @@ export default{
           aprendiz: value.aprendiz.codigo,
           plan: value.plan.codigo,
         }
-        console.log(value);
         await this.actualizarAprendizPlan({codigo: value.codigo, data: data});
         this.aprendizPlanFiltrado();
       },
@@ -159,7 +154,6 @@ export default{
         // Crear una copia de dateInicio para trabajar con la fecha
         let date = new Date(dateInicio);
         let incrementoMes = this.filaAP.plan.meses;
-        console.log("Incremento de meses:", incrementoMes);
 
         let mesTotal = date.getMonth() + incrementoMes;
 
@@ -177,7 +171,6 @@ export default{
         // Verificación correcta de finaliza1
         if (this.finaliza1 != null && this.finaliza1 != undefined) {
           this.finaliza1 = date.toISOString().split('T')[0];
-          console.log('Fecha final:', this.finaliza1);
         } else {
           this.finaliza1 = '';
         }
@@ -186,18 +179,15 @@ export default{
         this.tofinalizacion();
         if(this.filaAP.finaliza == this.finaliza1){
           const status = 'OK';
-          console.log(status);
           return status;
         } else{
           const status ='cancelado';
-          console.log(status);
           return status;
         }
       },
 
       evaluacion(value){
         this.filaAP = value;
-        console.log("FilaEvaluacion: ",this.filaAP);
         const estadoStyle = {
           estado: '',
           style: {},

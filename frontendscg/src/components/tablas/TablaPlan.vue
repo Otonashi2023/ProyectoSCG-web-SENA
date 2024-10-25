@@ -79,14 +79,12 @@ import { mapActions, mapMutations, mapState } from "vuex";
           this.obtenerPlanes();                   
         })
         .catch((error)=>{
-          console.log("Error al eliminar rutina", error);
+          console.error("Error al eliminar rutina", error);
         });
       },
       async datos2act(){
-        console.log('PLAN:'.planes);
         await this.actionDatos2(this.planes);
         await this.$nextTick();
-        console.log('AQUIIIIIII:',this.datos2);
       },
       consultarbyId(value){
         if(this.codigo==null){

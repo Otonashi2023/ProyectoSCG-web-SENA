@@ -198,7 +198,6 @@ export default{
       } else{
         let date = new Date(this.fecha);
       this. formattedDate = date.toISOString().split('T')[0];
-      console.log('DATE:', this.formattedDate);
       }
       this.data = {
         codigo: this.fichaAntropo?.codigo,
@@ -213,7 +212,6 @@ export default{
       };
     },
     datosPerimetricos(idFichaAntropo){
-      console.log('ID Ficha Antropo: ', idFichaAntropo);
       this.dataPerimetros = {
         codigo: this.perimetros?.codigo,
         cabeza: this.cabeza,
@@ -231,11 +229,9 @@ export default{
         pantorrillaMin: this.pantorrillaMin,
         fichaantropo: idFichaAntropo,
       };
-      console.log('ESTA EL ID?: ',this.perimetros);
     },
 
     result(){
-      console.log('actualizar: ',this.datoact1);
       if(this.datoact1 == null){
         this.numeroMaximo();
         this.setCurrentDate();
@@ -243,7 +239,6 @@ export default{
       }
       if(this.peso > 0 && this.altura > 0){
         this.imc = (this.peso/(this.altura*this.altura)).toFixed(2);
-        console.log('imc: ', this.imc);
         this.evaluacion(this.imc);
       } else{
         this.imc =null;
@@ -273,15 +268,13 @@ export default{
       } else {
         this.numControl = 1;
       }
-
-      console.log('Longitud de numeros: ', numeros.length);
-      console.log('Numero de control: ', this.numControl);
     },
+
     date(value){
       let date = new Date(value);
       this. formattedDate = date.toISOString().split('T')[0];
-      console.log('date', this.formattedDate);
     },
+
     servicio(){
       if(this.salvar==true){
         if(this.genero.codigo != null && this.personal.codigo != null){
@@ -322,15 +315,11 @@ export default{
         this.datosAntropometricos();
         await this.guardarFichaAntropo(this.data);
         await this.$nextTick();
-        console.log('FICHAANTROPO: ',this.fichaAntropo);
         const idFichaAntropo = this.fichaAntropo.codigo;
-        console.log('idFichaantropo: ',idFichaAntropo);
 
         this.datosPerimetricos(idFichaAntropo)
-        console.log('DATA PERIMETROS: ',this.dataPerimetros);
         await this.guardarPerimetros(this.dataPerimetros);
         await this.$nextTick();
-        console.log('perimetros antropometricos: ', this.perimetros);
         this.$emit('leave');
       }catch (error) {
         console.error("Error al guardar la ficha Antropometrica:", error);
@@ -343,18 +332,13 @@ export default{
         const idFichaAntropo = this.fichaAntropo?.codigo;
         await this.actualizarFichaAntropo({codigo: idFichaAntropo, data: this.data});
         await this.$nextTick();
-        console.log('FICHAANTROPO: ',this.fichaAntropo);
-        console.log('idFichaantropo: ',idFichaAntropo);
 
         this.datosPerimetricos(idFichaAntropo)
-        console.log('DATA PERIMETROS: ',this.dataPerimetros);
         const idPerimetros = this.perimetros?.codigo;
-        console.log('ID_PERIMETROS: ',this.perimetros);
         await this.actualizarPerimetros({codigo: idPerimetros, data: this.dataPerimetros});
         await this.$nextTick();
         this.limpiarDatoact1();
         await this.$nextTick();
-        console.log('perimetros antropometricos: ', this.perimetros);
 
         this.salir();
       }catch (error) {
@@ -363,19 +347,14 @@ export default{
     },
     salir(){
       if(this.datoact1 == null){
-        console.log('actualizar: ',this.datoact1);
         this.$emit('leave');
       }
     },
 
     async read(value){
       await this.consultarPerimetrosAll();
-      console.log('PERIMETROS ALL: ', this.perimetrosAll);
-      console.log('VALUE: ', value);
       const idPerimetros = this.perimetrosAll.filter(item => item.fichaantropo.codigo === value).map(item => item.codigo);
-      console.log('idPerimetros: ', idPerimetros);
       await this.consultarPerimetros(idPerimetros);
-      console.log('perimetros: ', this.perimetros);
       await this.consultarFichaAntropo(value);
       await this.consultarPersonal(this.fichaAntropo.personal.codigo);
       await this.consultarGenero(this.fichaAntropo.genero.codigo);
@@ -449,15 +428,12 @@ export default{
     storageTemporal(){
       this.datosAntropometricos(); 
       this.addFichaantropo(this.data);
-      console.log('el data es: ', this.data);
       this.datosPerimetricos()
       this.addPerimetros(this.dataPerimetros);
-      console.log('el data Perimetros es: ', this.dataPerimetros)
     },
 
     callMetodoG(){
-      if(this.imc != null){
-        console.log('verificando:', this.fecha);    
+      if(this.imc != null){    
         this.storageTemporal();
         this.actualizarRetorno3('retorno');
         this.$router.push('genero');

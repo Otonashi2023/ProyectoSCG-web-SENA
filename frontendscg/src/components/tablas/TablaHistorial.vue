@@ -101,7 +101,6 @@ export default{
             asistenciasFiltradas = this.ordenarAsistenciasPorFecha(asistenciasFiltradas);
 
             this.filtroAprendiz = this.formatearFechasAsistencias(asistenciasFiltradas);
-            console.log(this.filtroAprendiz);
             
             return this.filtroAprendiz;
         }
