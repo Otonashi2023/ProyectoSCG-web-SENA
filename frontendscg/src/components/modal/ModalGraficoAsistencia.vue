@@ -14,6 +14,8 @@
         </select> 
       </div>   
     <apexchart type="line" height="350" :options="chartOptions" :series="series"></apexchart>
+    <p>Semna: {{ fechaIn }}</p>
+    <input type="text" v-model="fechaIn2" @input="evaluarFecha()">
     </div>
   </div>
 </template>
@@ -28,6 +30,7 @@ import { mapActions, mapState } from "vuex";
     },
     data() {
       return {
+        fechaIn: '',
         etiquetasSemanas: [],
         nombreMes1: [],
         cargando: true,
@@ -301,12 +304,15 @@ import { mapActions, mapState } from "vuex";
 
       asistenciasFiltradas() {
         const filtro = this.asistencias.filter(item => item.aprendiz.codigo === this.aprendiz.codigo);
+        console.log('miga',filtro);
         const planFiltrado = this.planesFiltrados();
         console.log('miga_planFiltraado:' ,planFiltrado);
+        const fechaString = filtro.map(item => item.fecha.split('T')[0]);
+        console.log('miga to String;', fechaString);
         
-        const filtroAsistenciasPorPlan = filtro.filter(item => item.fecha >= planFiltrado.inicio && item.fecha <= planFiltrado.finaliza);
-        console.log('Miga: ',filtroAsistenciasPorPlan);
-        const fechasFiltradas = filtroAsistenciasPorPlan.map(asistencia =>{
+        const filtroAsistenciasPorPlan = fechaString.filter(item => item >= planFiltrado.inicio && item <= planFiltrado.finaliza);
+        console.log('Miga filtro por asistencia Plan: ',filtroAsistenciasPorPlan);
+        /*const fechasFiltradas = filtroAsistenciasPorPlan.map(asistencia =>{
           const fechaAsistencia = new Date(asistencia.fecha);
           if (!isNaN(fechaAsistencia)) {
             return fechaAsistencia.toISOString().split('T')[0];
@@ -315,9 +321,9 @@ import { mapActions, mapState } from "vuex";
             return null;
           }
         }).filter(fecha => fecha !== null);
-console.log('Miga2: ',fechasFiltradas);
+console.log('Miga2: ',fechasFiltradas);*/
 
-        const arrayX = fechasFiltradas.map(fecha => ({
+        const arrayX = filtroAsistenciasPorPlan.map(fecha => ({
           fecha,
           semana: this.getWeekNumber(fecha)
         }));
@@ -326,8 +332,9 @@ console.log('Miga2: ',fechasFiltradas);
         const { diasTotales } = this.obtenerValoresDelPlan();
         const { semanasCompletas } = this.calcularAsistenciaPerfecta(diasTotales);
         const totalSemanas = semanasCompletas;
+        const intervaloS = totalSemanas + 1;
 console.log('Miga3', totalSemanas);
-        let asistenciasPorSemana = new Array(totalSemanas).fill(null);
+        let asistenciasPorSemana = new Array(intervaloS).fill(null);
         console.log('miga4:',asistenciasPorSemana);
         let count = 0;
         let i = 0;
@@ -354,7 +361,7 @@ console.log('Miga3', totalSemanas);
         let semanaVigente = this.getWeekNumber(diaDehoy);
         console.log('Miga Semana vigente: ',semanaVigente);
         let semanaInicio = minSemana;
-        let diferencia = ((semanaVigente+1) - semanaInicio);
+        let diferencia = ((semanaVigente) - semanaInicio);
         console.log('miga semana inicio:', semanaInicio);
         console.log('miga final: ', this.getWeekNumber(planFiltrado.finaliza),planFiltrado.finaliza);
         if(diferencia <= totalSemanas){
@@ -362,8 +369,7 @@ console.log('Miga3', totalSemanas);
         } else {
           this.max = asistenciasPorSemana.length;
         }
-        const diaDehoyFormatted = diaDehoy.toISOString().split('T')[0]; 
-        console.log('Miga diferencia:', semanaVigente-this.getWeekNumber(planFiltrado.inicio));
+        const diaDehoyFormatted = diaDehoy.toISOString().split('T')[0];
         console.log('Miga Total semanas:', totalSemanas);
         console.log('Miga Max' , this.max);
 
@@ -372,12 +378,12 @@ console.log('Miga3', totalSemanas);
             asistenciasAcumuladas[i] = acumulado;
             console.log('Miga ASISTENCIAS ACUMULADAS: ', asistenciasAcumuladas);
             console.log('Miga this.max: ', this.max);
-            if(i==this.max && diaDehoyFormatted <= planFiltrado.finaliza){ 
+            /*if(i==this.max && diaDehoyFormatted <= planFiltrado.finaliza){ 
             alert('Hola');             
               acumulado += asistenciasPorSemana[i+1];
               asistenciasAcumuladas[i+1] = acumulado;
               console.log('Miga acumulada2: ',asistenciasAcumuladas);
-            }
+            }*/
             console.log('miga i',i);
             console.log('miga d',diaDehoyFormatted);
             console.log('miga f',planFiltrado.finaliza);
@@ -510,6 +516,9 @@ console.log('Miga3', totalSemanas);
       cerrarModal(){
         this.$emit('showModal', false);
       },
+      evaluarFecha(){
+        this.fechaIn = this.getWeekNumber(new Date(this.fechaIn2));
+      }
       
     },
     mounted(){
