@@ -80,6 +80,8 @@ import { mapActions, mapMutations, mapState } from 'vuex';
 export default {
   data(){
     return{
+      username: "",
+
       nombreTD:"",
       nombreCargo:"",
 
@@ -112,7 +114,7 @@ export default {
 
         if(Array.isArray(this.usuarios)){
           const foundUser = this.usuarios.find(user =>
-          user.username === this.user.username);
+          user.username === this.user.username ? this.user.username : "");
   
           if (foundUser) {
               const idUsuario = foundUser.codigo;
@@ -228,12 +230,14 @@ export default {
       this.$emit('verModal', modal);
     }, 
   },
-  created(){
+  mounted(){if (this.user && this.user.username) {
     this.datosPerfil();
-  },
-  mounted(){
     this.clearSearchQuery();
-  }
+    } else {
+      console.log("Sesión no encontrada. Redirigiendo a login.");
+      this.$router.push('/login');
+    }
+  },
 }
 </script>
 

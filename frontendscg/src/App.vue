@@ -29,9 +29,10 @@ export default{
     NavegacionPrincipal,
     EncabezadoPrincipal,
   },
+
   computed:{
     ...mapGetters(['inVisible','outVisible'])
-  }
+  },
 }
 </script>
 
