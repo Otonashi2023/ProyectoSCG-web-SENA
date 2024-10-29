@@ -1,8 +1,8 @@
 <template>
   <div class="modal-fondo">
     <div v-if="cargando" class="loader">
-        <img src="@/assets/loading.gif" alt="Cargando..." style="width: 50px;"/>
-      </div>
+      <img src="@/assets/loading.gif" alt="Cargando..." style="width: 50px;"/>
+    </div>
     <div class="modal-contenido" v-show="tabla">
       <div style="display:grid;grid-template-columns:  auto auto;justify-content:space-between;">
         <div>

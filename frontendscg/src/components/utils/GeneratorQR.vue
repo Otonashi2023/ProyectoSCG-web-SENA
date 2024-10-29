@@ -4,11 +4,11 @@
           <div v-if="cargando" class="loader">
             <img src="@/assets/loading.gif" alt="Cargando..." />
           </div>
-          <div class="modal-contenido" id="tabla-para-descargar">
+          <div class="modal-contenido" id="tabla-para-descargar" v-show="download">
             <div style="display: grid;grid-template-columns: 1fr auto;">
               <h3>Imagen QR del aprendiz</h3>
               <font-awesome-icon icon="file-export" id="editar" style="padding-top:16px;"
-                v-show="download" @click="descargarTablaComoImagen"/>
+                @click="descargarTablaComoImagen"/>
             </div>
               <div v-if="qrImageUrl" class="perfil-contenedor">
                   <img :src="qrImageUrl" alt="Código QR" style="height: 400px;"/>
@@ -26,7 +26,7 @@ import { mapActions, mapState } from "vuex";
     data(){
       return{
         cargando: true,
-        download: true,
+        download: false,
       }
     },
     computed: {
@@ -35,17 +35,21 @@ import { mapActions, mapState } from "vuex";
     methods: {
       ...mapActions('aprendiz', ['generarQRCode', 'limpiarQRCode']),
       
-      generarQR() {
+     async generarQR() {
         const idAprendiz = this.aprendiz?.codigo;
-        this.generarQRCode(idAprendiz);
-        this.cargando = false;
+        await this.generarQRCode(idAprendiz);
+        await this.$nextTick();
+        this.download = true;
+        if(this.download == true){
+          this.cargando = false;
+        }
+        
       },
       cerrarQR(){
         const qr = false;
         this.$emit('verQR', qr);
       },
       descargarTablaComoImagen() {
-        this.download = false;
         this.$nextTick(() => {
           const tabla = document.getElementById('tabla-para-descargar');
           if (tabla) {
