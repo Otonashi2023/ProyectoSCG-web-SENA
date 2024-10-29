@@ -187,10 +187,10 @@ export default{
       this.pantorrillaMin = this.perimetros?.pantorrillaMin;
       this.evaluacion();
     },
-    getNombreEv(){
-      const nombre = this.personal?.persona?.nombres.split(' ')[0];
-      const apellido = this.personal?.persona?.apellidos.split(' ')[0];
-      this.vpersonal = [nombre, apellido].join(' ');
+    getNombreEv() {
+      const nombre = this.personal?.persona?.nombres ? this.personal.persona.nombres.split(' ')[0] : '';
+      const apellido = this.personal?.persona?.apellidos ? this.personal.persona.apellidos.split(' ')[0] : '';
+      this.vpersonal = [nombre, apellido].join(' ').trim();
     },
     datosAntropometricos(){
       if(this.fecha == null){
